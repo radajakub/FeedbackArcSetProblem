@@ -11,22 +11,22 @@ LDFLAGS=
 LDLIBS=-L/Library/gurobi1100/macos_universal2/lib -lgurobi_c++ -lgurobi110
 
 # Find all the C++ files in src and test directories
-SRC_SRCS=$(SRC_DIR)/solve.cpp
+OPT_SRCS=$(SRC_DIR)/optimal.cpp $(SRC_DIR)/graph.cpp 
 TEST_SRCS=$(TEST_DIR)/gurobi.cpp
 
 # Create object file names by replacing .cpp with .o
-SRC_OBJS=$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRC_SRCS))
+OPT_OBJS=$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(OPT_SRCS))
 TEST_OBJS=$(patsubst $(TEST_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 
 # Targets
-SRC_TARGET=$(BUILD_DIR)/optimal
+OPT_TARGET=$(BUILD_DIR)/optimal
 TEST_TARGET=$(BUILD_DIR)/gurobi_test
 
 # Build targets
-all: $(SRC_TARGET)
+all: $(OPT_TARGET)
 test: $(TEST_TARGET)
 
-$(SRC_TARGET): $(SRC_OBJS)
+$(OPT_TARGET): $(OPT_OBJS)
 	$(CXX) $(CXXFLAGS) $(INC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(TEST_TARGET): $(TEST_OBJS)
