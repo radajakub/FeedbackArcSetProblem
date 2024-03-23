@@ -1,32 +1,11 @@
 #include <gurobi_c++.h>
 
+#include <fstream>
 #include <iostream>
 
-#include "graph.hpp"
-
-int solve(co::DGraph &g) {
-    GRBEnv env;
-    GRBModel model(env);
-
-    GRBVar *x = model.addVars(g.E, GRB_BINARY);
-
-    // set objective as a sum of edge costs for edges which are in the graph
-    GRBLinExpr expression = 0;
-    for (int i = 0; i < g.E; ++i) {
-        co::Edge e = g.edges[i];
-        expression += x[i] * e.cost;
-    }
-    model.setObjective(expression, GRB_MINIMIZE);
-
-    model.optimize();
-
-    int obj_value = model.get(GRB_DoubleAttr_ObjVal);
-
-    // free variables
-    delete[] x;
-
-    return obj_value;
-}
+#include "graph.h"
+#include "milp.h"
+#include "solution.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -44,7 +23,8 @@ int main(int argc, char *argv[]) {
     std::cout << std::endl;
     co::print_matrix(g.adjacency_matrix);
 
-    solve(g);
+    co::Solution solution = co::solve_milp(g);
+    solution.save(output_path);
 
     return 0;
 }

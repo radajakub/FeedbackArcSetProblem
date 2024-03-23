@@ -37,6 +37,8 @@ namespace co {
         // construct a graph representation frmo a list of edges
         DGraph(std::vector<Edge> &edges);
 
+        std::vector<std::vector<int>> build_adjacency_list(std::vector<Edge> &edges);
+
         // print graph information
         void print();
     };
