@@ -1,4 +1,4 @@
-#include "graph.hpp"
+#include "graph.h"
 
 co::DGraph::DGraph(std::vector<co::Edge> &edges) {
     this->E = edges.size();
