@@ -1,7 +1,7 @@
 #include <gurobi_c++.h>
 
-#include <fstream>
 #include <iostream>
+#include <string>
 
 #include "graph.h"
 #include "milp.h"
@@ -19,11 +19,9 @@ int main(int argc, char *argv[]) {
     std::vector<co::Edge> edges = co::load_edges(input_path);
 
     co::DGraph g(edges);
-    g.print();
-    std::cout << std::endl;
-    co::print_matrix(g.adjacency_matrix);
 
     co::Solution solution = co::solve_milp(g);
+
     solution.save(output_path);
 
     return 0;

@@ -3,6 +3,7 @@
 
 #include <gurobi_c++.h>
 
+#include "graph.h"
 #include "solution.h"
 
 namespace co {
