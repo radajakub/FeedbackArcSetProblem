@@ -1,5 +1,14 @@
 #include "graph.h"
 
+void co::Edge::println() {
+    std::cout << this->source << " -(" << this->cost << ")-> " << this->target << std::endl;
+}
+
+void co::Node::print(bool newLine) {
+    std::cout << this->node << "(" << this->cost << ") ";
+    if (newLine) std::cout << std::endl;
+}
+
 co::DGraph::DGraph(std::vector<co::Edge> &edges) {
     this->E = edges.size();
 
@@ -12,14 +21,17 @@ co::DGraph::DGraph(std::vector<co::Edge> &edges) {
 
     this->edges = edges;
 
-    // create adjacency list [V x Ni] and cost matrix [V x V]
-    this->adjacency_list = std::vector<std::vector<int>>(this->V);
-    for (int i = 0; i < this->V; ++i) this->adjacency_list[i].reserve(this->V);
+    this->out_edges.resize(this->V);
+    for (int i = 0; i < this->V; ++i)
+        this->out_edges[i].reserve(this->V);
 
-    this->adjacency_matrix = std::vector<std::vector<int>>(this->V, std::vector<int>(this->V, 0));
+    this->in_edges.resize(this->V);
+    for (int i = 0; i < this->V; ++i)
+        this->in_edges[i].reserve(this->V);
+
     for (co::Edge e : edges) {
-        this->adjacency_list[e.source].push_back(e.target);
-        this->adjacency_matrix[e.source][e.target] = e.cost;
+        this->out_edges[e.source].push_back(co::Node(e.target, e.cost));
+        this->in_edges[e.target].push_back(co::Node(e.source, e.cost));
     }
 }
 
@@ -27,12 +39,15 @@ void co::DGraph::print() {
     std::cout << "Graph" << std::endl;
     std::cout << " - |E| = " << this->E << std::endl;
     std::cout << " - |V| = " << this->V << std::endl;
-    std::cout << " - Adjacency List" << std::endl;
-    for (int v1 = 0; v1 < this->V; ++v1) {
-        std::cout << " --- " << v1 << " -> ";
-        for (int v2 : this->adjacency_list[v1]) {
-            std::cout << v2 << "(" << this->adjacency_matrix[v1][v2] << ") ";
-        }
+
+    std::cout << " - Edges" << std::endl;
+    for (co::Edge e : this->edges) e.println();
+
+    std::cout << " - Adjacency Lists" << std::endl;
+    for (int i = 0; i < this->V; ++i) {
+        for (co::Node n : this->in_edges[i]) n.print(false);
+        std::cout << " -> " << i << " -> ";
+        for (co::Node n : this->out_edges[i]) n.print(false);
         std::cout << std::endl;
     }
 }
@@ -55,18 +70,4 @@ std::vector<co::Edge> co::load_edges(std::string path) {
     f.close();
 
     return edges;
-}
-
-void co::print_vector(std::vector<int> &v) {
-    for (int i = 0; i < v.size(); ++i) std::cout << v[i] << " ";
-    std::cout << std::endl;
-}
-
-void co::print_matrix(std::vector<std::vector<int>> &m) {
-    for (int i = 0; i < m.size(); ++i) {
-        for (int j = 0; j < m[i].size(); ++j) {
-            std::cout << std::setw(2) << std::setfill(' ') << m[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
 }

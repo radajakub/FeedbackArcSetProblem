@@ -16,6 +16,18 @@ namespace co {
         int cost;
 
         Edge(int source, int target, int cost) : source(source), target(target), cost(cost) {}
+
+        void println();
+    };
+
+    class Node {
+    public:
+        int node;
+        int cost;
+
+        Node(int node, int cost) : node(node), cost(cost) {}
+
+        void print(bool newLine);
     };
 
     class DGraph {
@@ -30,10 +42,8 @@ namespace co {
         std::vector<Edge> edges;
 
         // holds lists of adjacent vertices for easier iterations
-        std::vector<std::vector<int>> adjacency_list;
-
-        // holds costs in a matrix
-        std::vector<std::vector<int>> adjacency_matrix;
+        std::vector<std::vector<Node>> out_edges;
+        std::vector<std::vector<Node>> in_edges;
 
         // construct a graph representation frmo a list of edges
         DGraph(std::vector<Edge> &edges);
@@ -43,9 +53,6 @@ namespace co {
     };
 
     std::vector<Edge> load_edges(std::string path);
-
-    void print_vector(std::vector<int> &v);
-    void print_matrix(std::vector<std::vector<int>> &m);
 
 };
 #endif
