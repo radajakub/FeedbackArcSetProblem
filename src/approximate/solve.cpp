@@ -3,7 +3,7 @@
 
 #include "graph.h"
 #include "heuristic.h"
-#include "solution.h"
+#include "state.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -14,13 +14,18 @@ int main(int argc, char *argv[]) {
     std::string input_path = argv[1];
     std::string output_path = argv[2];
 
-    std::vector<co::Edge> edges = co::load_edges(input_path);
+    std::random_device rd;
+    std::default_random_engine rng(rd());
 
-    co::DGraph g(edges);
+    co::DGraph g(input_path);
+    // g.print();
 
-    co::Solution solution = co::solve_heuristic(g);
+    co::State state(g.V);
+    state.random_init(rng);
+    state.evaluate_full(g);
 
-    solution.save(output_path);
+    state.println(g);
+    // state.save_solution(g, output_path);
 
     return 0;
 }

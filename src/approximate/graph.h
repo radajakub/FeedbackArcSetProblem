@@ -9,23 +9,12 @@
 
 namespace co {
 
-    class Edge {
+    class Vertex {
     public:
-        int source;
-        int target;
+        int vertex;
         int cost;
 
-        Edge(int source, int target, int cost) : source(source), target(target), cost(cost) {}
-
-        void println();
-    };
-
-    class Node {
-    public:
-        int node;
-        int cost;
-
-        Node(int node, int cost) : node(node), cost(cost) {}
+        Vertex(int vertex, int cost) : vertex(vertex), cost(cost) {}
 
         void print(bool newLine);
     };
@@ -38,21 +27,16 @@ namespace co {
         // |V|
         int V;
 
-        // holds list of edges
-        std::vector<Edge> edges;
-
         // holds lists of adjacent vertices for easier iterations
-        std::vector<std::vector<Node>> out_edges;
-        std::vector<std::vector<Node>> in_edges;
+        std::vector<std::vector<Vertex>> out_edges;
+        std::vector<std::vector<Vertex>> in_edges;
 
         // construct a graph representation frmo a list of edges
-        DGraph(std::vector<Edge> &edges);
+        DGraph(std::string &path);
 
         // print graph information
         void print();
     };
-
-    std::vector<Edge> load_edges(std::string path);
 
 };
 #endif
