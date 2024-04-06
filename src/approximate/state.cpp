@@ -6,6 +6,12 @@ co::State::State(int V) {
     this->order.resize(V);
 }
 
+co::State::State(co::State &s) {
+    this->V = s.V;
+    this->value = s.value;
+    this->order = s.order;
+}
+
 void co::State::random_init(std::default_random_engine &rng) {
     std::iota(this->order.begin(), this->order.end(), 0);
     std::shuffle(this->order.begin(), this->order.end(), rng);
