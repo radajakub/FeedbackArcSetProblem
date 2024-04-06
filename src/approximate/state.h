@@ -27,7 +27,11 @@ namespace co {
         State(State &s);
 
         // create a random permutation of vertices (their orders)
-        void random_init(std::default_random_engine &rng);
+        void random_init(Sampler &sampler);
+
+        void degree_init(DGraph &g);
+
+        void perturbate(Sampler &sampler);
 
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);

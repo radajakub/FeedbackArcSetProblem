@@ -38,6 +38,15 @@ co::DGraph::DGraph(std::string &path) {
         this->out_edges[source].push_back(co::Vertex(target, cost));
         this->in_edges[target].push_back(co::Vertex(source, cost));
     }
+
+    // compute degrees
+    this->out_degrees.resize(this->V);
+    this->in_degrees.resize(this->V);
+    for (int v = 0; v < this->V; ++v) {
+        this->out_degrees[v] = this->out_edges[v].size();
+        this->in_degrees[v] = this->in_edges[v].size();
+        std::cout << this->in_degrees[v] << " " << this->out_degrees[v] << std::endl;
+    }
 }
 
 void co::DGraph::print() {

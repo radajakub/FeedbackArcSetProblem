@@ -8,12 +8,13 @@ namespace co {
     // remake to generator class with fixed initalizer (see chat gpt)
     class Sampler {
     public:
-        std::default_random_engine rng;
+        std::mt19937 rng;
         std::uniform_real_distribution<double> dist;
+        std::uniform_int_distribution<int> vertex_dist;
 
-        Sampler(int seed);
+        Sampler(int V, int seed);
 
-        double sample_prob();
+        int sample_vertex();
     };
 
     class Timer {

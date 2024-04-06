@@ -20,19 +20,32 @@ int main(int argc, char *argv[]) {
     // start timer
     co::Timer timer(std::stoi(time_limit), 100);
 
-    // intialize random number generator
-    co::Sampler sampler(0);
-
     // build graph from input
     co::DGraph g(input_path);
 
+    // intialize random number generator
+    std::cout << g.V << std::endl;
+    co::Sampler sampler(g.V, 1);
+
     co::State state(g.V);
-    state.random_init(sampler.rng);
+    state.random_init(sampler);
+    // state.degree_init(g);
     state.evaluate_full(g);
 
-    state.save_solution(g, output_path);
+    while (!timer.should_stop()) {
+        co::State candidate(state);
+        candidate.random_init(sampler);
+        candidate.evaluate_full(g);
+        // candidate.perturbate(sampler);
+        // candidate.evaluate_full(g);
 
-    std::cout << timer.elapsed_time() << std::endl;
+        if (candidate.value < state.value) {
+            state = co::State(candidate);
+            std::cout << candidate.value << std::endl;
+        }
+    }
+
+    state.save_solution(g, output_path);
 
     return 0;
 }

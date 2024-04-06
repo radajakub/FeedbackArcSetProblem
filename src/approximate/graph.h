@@ -29,7 +29,9 @@ namespace co {
 
         // holds lists of adjacent vertices for easier iterations
         std::vector<std::vector<Vertex>> out_edges;
+        std::vector<int> out_degrees;
         std::vector<std::vector<Vertex>> in_edges;
+        std::vector<int> in_degrees;
 
         // construct a graph representation frmo a list of edges
         DGraph(std::string &path);
