@@ -26,13 +26,14 @@ namespace co {
 
         void set_order(int vertex, int order);
 
-        void perturbate(Sampler &sampler);
-
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
 
+        void evaluate_incremental(DGraph &g, co::State &original, std::vector<int> &changed);
+
         void save_solution(DGraph &g, std::string &path);
 
+        void print_val();
         void println(DGraph &g);
     };
 };

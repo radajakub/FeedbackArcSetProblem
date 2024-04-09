@@ -4,6 +4,7 @@
 
 #include "builders.h"
 #include "graph.h"
+#include "modifiers.h"
 #include "state.h"
 #include "utils.h"
 
@@ -29,7 +30,6 @@ int main(int argc, char *argv[]) {
     // co::State state = co::builders::random(g, sampler);
     // co::State state = co::builders::in_degree(g);
     co::State state = co::builders::out_degree(g);
-
     state.evaluate_full(g);
 
     // state.save_solution(g, output_path);
