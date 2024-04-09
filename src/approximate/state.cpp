@@ -6,35 +6,8 @@ co::State::State(int V) {
     this->order.resize(V);
 }
 
-co::State::State(co::State &s) {
-    this->V = s.V;
-    this->value = s.value;
-    this->order = s.order;
-}
-
-void co::State::random_init(co::Sampler &sampler) {
-    std::iota(this->order.begin(), this->order.end(), 0);
-    std::shuffle(this->order.begin(), this->order.end(), sampler.rng);
-}
-
-void co::State::degree_init(co::DGraph &g) {
-    std::vector<std::pair<int, int>> enhanced_indegrees(g.V);
-    for (int i = 0; i < g.V; ++i) {
-        enhanced_indegrees[i] = std::make_pair(g.in_degrees[i], i);
-    }
-    // sort by in-degrees
-    std::sort(enhanced_indegrees.begin(), enhanced_indegrees.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
-        if (a.first == b.first) {
-            return g.out_degrees[a.second] < g.out_degrees[b.second];
-        }
-        return a.first < b.first;
-    });
-    for (int i = 0; i < g.V; ++i) {
-        this->order[enhanced_indegrees[i].second] = i;
-    }
-    for (int i = 0; i < g.V; ++i) {
-        std::cout << i << ":" << this->order[i] << " ";
-    }
+void co::State::set_order(int vertex, int order) {
+    this->order[vertex] = order;
 }
 
 void co::State::perturbate(co::Sampler &sampler) {

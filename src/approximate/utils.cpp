@@ -3,7 +3,6 @@
 #include <iostream>
 
 co::Sampler::Sampler(int V, int seed) {
-    std::cout << "V: " << V << std::endl;
     this->rng.seed(seed);
     this->dist = std::uniform_real_distribution<double>(0, 1);
     this->vertex_dist = std::uniform_int_distribution<int>(0, V - 1);

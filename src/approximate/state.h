@@ -23,13 +23,8 @@ namespace co {
 
         // construct empty solution
         State(int V);
-        // copy constructor
-        State(State &s);
 
-        // create a random permutation of vertices (their orders)
-        void random_init(Sampler &sampler);
-
-        void degree_init(DGraph &g);
+        void set_order(int vertex, int order);
 
         void perturbate(Sampler &sampler);
 

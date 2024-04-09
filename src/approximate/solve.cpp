@@ -2,6 +2,7 @@
 #include <random>
 #include <string>
 
+#include "builders.h"
 #include "graph.h"
 #include "state.h"
 #include "utils.h"
@@ -23,28 +24,16 @@ int main(int argc, char *argv[]) {
     co::DGraph g(input_path);
 
     // intialize random number generator
-    std::cout << g.V << std::endl;
     co::Sampler sampler(g.V, 1);
 
-    co::State state(g.V);
-    // state.random_init(sampler);
-    // state.degree_init(g);
+    // co::State state = co::builders::random(g, sampler);
+    // co::State state = co::builders::in_degree(g);
+    co::State state = co::builders::out_degree(g);
+
     state.evaluate_full(g);
 
-    // while (!timer.should_stop()) {
-    //     co::State candidate(state);
-    //     candidate.random_init(sampler);
-    //     candidate.evaluate_full(g);
-    //     // candidate.perturbate(sampler);
-    //     // candidate.evaluate_full(g);
-
-    //     if (candidate.value < state.value) {
-    //         state = co::State(candidate);
-    //         std::cout << candidate.value << std::endl;
-    //     }
-    // }
-
-    state.save_solution(g, output_path);
+    // state.save_solution(g, output_path);
+    state.println(g);
 
     return 0;
 }

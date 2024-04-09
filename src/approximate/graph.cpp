@@ -45,7 +45,6 @@ co::DGraph::DGraph(std::string &path) {
     for (int v = 0; v < this->V; ++v) {
         this->out_degrees[v] = this->out_edges[v].size();
         this->in_degrees[v] = this->in_edges[v].size();
-        std::cout << this->in_degrees[v] << " " << this->out_degrees[v] << std::endl;
     }
 }
 
