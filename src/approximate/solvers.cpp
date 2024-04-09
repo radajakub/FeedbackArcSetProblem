@@ -4,8 +4,6 @@ co::State co::solvers::random_greedy(co::DGraph &g, co::Sampler &sampler, co::Ti
     co::State state = co::builders::random(g, sampler);
     state.evaluate_full(g);
 
-    std::cout << "here" << std::endl;
-
     co::State best = state;
     while (!timer.should_stop()) {
         state = co::modifiers::perturbate(g, state, sampler);
