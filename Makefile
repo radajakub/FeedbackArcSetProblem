@@ -17,7 +17,7 @@ APP_LDLIBS=
 
 # Find all the C++ files in src and test directories
 OPT_SRCS=$(SRC_DIR)/$(OPT_DIR)/solve.cpp $(SRC_DIR)/$(OPT_DIR)/graph.cpp $(SRC_DIR)/$(OPT_DIR)/milp.cpp $(SRC_DIR)/$(OPT_DIR)/solution.cpp
-APP_SRCS=$(SRC_DIR)/$(APP_DIR)/main.cpp $(SRC_DIR)/$(APP_DIR)/graph.cpp $(SRC_DIR)/$(APP_DIR)/state.cpp $(SRC_DIR)/$(APP_DIR)/utils.cpp $(SRC_DIR)/$(APP_DIR)/builders.cpp $(SRC_DIR)/$(APP_DIR)/modifiers.cpp
+APP_SRCS=$(SRC_DIR)/$(APP_DIR)/main.cpp $(SRC_DIR)/$(APP_DIR)/graph.cpp $(SRC_DIR)/$(APP_DIR)/state.cpp $(SRC_DIR)/$(APP_DIR)/utils.cpp $(SRC_DIR)/$(APP_DIR)/builders.cpp $(SRC_DIR)/$(APP_DIR)/modifiers.cpp $(SRC_DIR)/$(APP_DIR)/solvers.cpp
 
 TEST_SRCS=$(TEST_DIR)/gurobi.cpp
 

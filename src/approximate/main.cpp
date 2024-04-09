@@ -5,6 +5,7 @@
 #include "builders.h"
 #include "graph.h"
 #include "modifiers.h"
+#include "solvers.h"
 #include "state.h"
 #include "utils.h"
 
@@ -27,13 +28,10 @@ int main(int argc, char *argv[]) {
     // intialize random number generator
     co::Sampler sampler(g.V, 1);
 
-    // co::State state = co::builders::random(g, sampler);
-    // co::State state = co::builders::in_degree(g);
-    co::State state = co::builders::out_degree(g);
-    state.evaluate_full(g);
+    co::State result = co::solvers::random_greedy(g, sampler, timer);
 
     // state.save_solution(g, output_path);
-    state.println(g);
+    result.println(g);
 
     return 0;
 }

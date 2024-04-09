@@ -1,0 +1,17 @@
+#ifndef __SOLVERS_H__
+#define __SOLVERS_H__
+
+#include "builders.h"
+#include "modifiers.h"
+#include "state.h"
+#include "util.h"
+
+namespace co {
+    namespace solvers {
+
+        State random_greedy(DGraph &g, Sampler &sampler, Timer &timer);
+
+    };
+};
+
+#endif
