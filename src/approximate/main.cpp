@@ -28,7 +28,10 @@ int main(int argc, char *argv[]) {
     // intialize random number generator
     co::Sampler sampler(g.V, 1);
 
-    co::State result = co::solvers::random_greedy(g, sampler, timer);
+    std::cout << "here" << std::endl;
+
+    // co::State result = co::solvers::random_greedy(g, sampler, timer);
+    co::State result = co::solvers::greedy_improve(g, sampler, timer);
 
     // state.save_solution(g, output_path);
     result.println(g);

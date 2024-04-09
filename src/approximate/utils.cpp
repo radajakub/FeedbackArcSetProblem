@@ -12,6 +12,10 @@ int co::Sampler::sample_vertex() {
     return this->vertex_dist(this->rng);
 }
 
+double co::Sampler::sample_prob() {
+    return this->dist(this->rng);
+}
+
 co::Timer::Timer(int limit, int safety_margin) {
     this->limit = limit * 1000;
     this->safety_margin = safety_margin;

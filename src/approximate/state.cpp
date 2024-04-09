@@ -13,12 +13,9 @@ void co::State::set_order(int vertex, int order) {
 void co::State::evaluate_full(co::DGraph &g) {
     this->value = 0;
     // sum over all outgoing edges for every vertex
-    for (int start = 0; start < this->V; ++start) {
-        for (co::Vertex &end : g.out_edges[start]) {
-            // add it to removed only when the edge goes against the order
-            if (this->order[start] > this->order[end.vertex]) {
-                this->value += end.cost;
-            }
+    for (co::Edge &e : g.edges) {
+        if (this->order[e.source] > this->order[e.target]) {
+            this->value += e.cost;
         }
     }
 }

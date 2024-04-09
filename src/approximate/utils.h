@@ -15,6 +15,8 @@ namespace co {
         Sampler(int V, int seed);
 
         int sample_vertex();
+
+        double sample_prob();
     };
 
     class Timer {

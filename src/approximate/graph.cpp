@@ -10,7 +10,7 @@ co::DGraph::DGraph(std::string &path) {
 
     f >> this->E;
 
-    std::vector<std::tuple<int, int, int>> edges;
+    this->edges.reserve(this->E);
 
     this->V = 0;
     int source, target, cost;
@@ -18,7 +18,7 @@ co::DGraph::DGraph(std::string &path) {
     for (int i = 0; i < E; ++i) {
         f >> source >> target >> cost;
         // shift to start at 0
-        edges.push_back(std::make_tuple(source - 1, target - 1, cost));
+        this->edges.push_back(co::Edge(source - 1, target - 1, cost));
         this->V = std::max(this->V, std::max(source, target));
     }
     f.close();
@@ -31,12 +31,9 @@ co::DGraph::DGraph(std::string &path) {
     for (int i = 0; i < this->V; ++i)
         this->in_edges[i].reserve(this->V);
 
-    for (std::tuple<int, int, int> &e : edges) {
-        int source = std::get<0>(e);
-        int target = std::get<1>(e);
-        int cost = std::get<2>(e);
-        this->out_edges[source].push_back(co::Vertex(target, cost));
-        this->in_edges[target].push_back(co::Vertex(source, cost));
+    for (co::Edge &e : this->edges) {
+        this->out_edges[e.source].push_back(co::Vertex(e.target, e.cost));
+        this->in_edges[e.target].push_back(co::Vertex(e.source, e.cost));
     }
 
     // compute degrees

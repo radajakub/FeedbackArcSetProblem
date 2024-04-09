@@ -19,6 +19,15 @@ namespace co {
         void print(bool newLine);
     };
 
+    class Edge {
+    public:
+        int source;
+        int target;
+        int cost;
+
+        Edge(int source, int target, int cost) : source(source), target(target), cost(cost) {}
+    };
+
     class DGraph {
     public:
         // |E|
@@ -26,6 +35,8 @@ namespace co {
 
         // |V|
         int V;
+
+        std::vector<Edge> edges;
 
         // holds lists of adjacent vertices for easier iterations
         std::vector<std::vector<Vertex>> out_edges;

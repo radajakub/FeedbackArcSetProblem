@@ -11,6 +11,8 @@ namespace co {
 
         State random_greedy(DGraph &g, Sampler &sampler, Timer &timer);
 
+        State greedy_improve(DGraph &g, Sampler &sampler, Timer &timer);
+
     };
 };
 

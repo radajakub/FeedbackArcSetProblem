@@ -11,8 +11,10 @@ namespace co {
 
     namespace modifiers {
 
-        co::State swap(co::DGraph &g, co::State &state, int u, int v);
-        co::State perturbate(co::DGraph &g, co::State &state, co::Sampler &sampler);
+        State swap(DGraph &g, State &state, int u, int v);
+        State perturbate(DGraph &g, State &state, Sampler &sampler);
+
+        State improve_worst(DGraph &g, State &state);
 
     };
 
