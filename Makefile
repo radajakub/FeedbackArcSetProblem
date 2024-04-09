@@ -17,7 +17,7 @@ APP_LDLIBS=
 
 # Find all the C++ files in src and test directories
 OPT_SRCS=$(SRC_DIR)/$(OPT_DIR)/solve.cpp $(SRC_DIR)/$(OPT_DIR)/graph.cpp $(SRC_DIR)/$(OPT_DIR)/milp.cpp $(SRC_DIR)/$(OPT_DIR)/solution.cpp
-APP_SRCS=$(SRC_DIR)/$(APP_DIR)/solve.cpp $(SRC_DIR)/$(APP_DIR)/graph.cpp $(SRC_DIR)/$(APP_DIR)/state.cpp $(SRC_DIR)/$(APP_DIR)/heuristic.cpp $(SRC_DIR)/$(APP_DIR)/utils.cpp
+APP_SRCS=$(SRC_DIR)/$(APP_DIR)/solve.cpp $(SRC_DIR)/$(APP_DIR)/graph.cpp $(SRC_DIR)/$(APP_DIR)/state.cpp $(SRC_DIR)/$(APP_DIR)/utils.cpp
 TEST_SRCS=$(TEST_DIR)/gurobi.cpp
 
 # Create object file names by replacing .cpp with .o
@@ -31,8 +31,8 @@ APP_TARGET=$(BUILD_DIR)/$(APP_DIR)/solve
 TEST_TARGET=$(BUILD_DIR)/gurobi_test
 
 # Build targets
-opt: $(OPT_TARGET)
 app: $(APP_TARGET)
+opt: $(OPT_TARGET)
 test: $(TEST_TARGET)
 
 $(OPT_TARGET): $(OPT_OBJS)
@@ -63,4 +63,4 @@ $(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: opt app clean test
+.PHONY: opt app clean test all
