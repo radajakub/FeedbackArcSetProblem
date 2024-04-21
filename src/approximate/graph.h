@@ -9,6 +9,7 @@
 
 namespace co {
 
+    // representation for adjacency list with costs
     class Vertex {
     public:
         int vertex;
@@ -26,6 +27,8 @@ namespace co {
         int cost;
 
         Edge(int source, int target, int cost) : source(source), target(target), cost(cost) {}
+
+        void print();
     };
 
     class DGraph {
@@ -36,9 +39,10 @@ namespace co {
         // |V|
         int V;
 
+        // list of all edges
         std::vector<Edge> edges;
 
-        // holds lists of adjacent vertices for easier iterations
+        // lists of adjacent vertices for easier iterations
         std::vector<std::vector<Vertex>> out_edges;
         std::vector<int> out_degrees;
         std::vector<std::vector<Vertex>> in_edges;

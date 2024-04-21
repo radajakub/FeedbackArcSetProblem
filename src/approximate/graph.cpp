@@ -5,6 +5,10 @@ void co::Vertex::print(bool newLine) {
     if (newLine) std::cout << std::endl;
 }
 
+void co::Edge::print() {
+    std::cout << this->source << " -(" << this->cost << ")-> " << this->target << std::endl;
+}
+
 co::DGraph::DGraph(std::string &path) {
     std::ifstream f(path, std::ios_base::in);
 
@@ -23,6 +27,7 @@ co::DGraph::DGraph(std::string &path) {
     }
     f.close();
 
+    // preallocate adjacency lists and degree lists
     this->out_edges.resize(this->V);
     for (int i = 0; i < this->V; ++i)
         this->out_edges[i].reserve(this->V);
@@ -31,17 +36,15 @@ co::DGraph::DGraph(std::string &path) {
     for (int i = 0; i < this->V; ++i)
         this->in_edges[i].reserve(this->V);
 
+    this->out_degrees.resize(this->V, 0);
+    this->in_degrees.resize(this->V, 0);
+
+    // compute adjacency lists and in/out degrees
     for (co::Edge &e : this->edges) {
         this->out_edges[e.source].push_back(co::Vertex(e.target, e.cost));
+        ++(this->out_degrees[e.source]);
         this->in_edges[e.target].push_back(co::Vertex(e.source, e.cost));
-    }
-
-    // compute degrees
-    this->out_degrees.resize(this->V);
-    this->in_degrees.resize(this->V);
-    for (int v = 0; v < this->V; ++v) {
-        this->out_degrees[v] = this->out_edges[v].size();
-        this->in_degrees[v] = this->in_edges[v].size();
+        ++(this->in_degrees[e.target]);
     }
 }
 
@@ -53,7 +56,8 @@ void co::DGraph::print() {
     std::cout << " - Adjacency Lists" << std::endl;
     for (int i = 0; i < this->V; ++i) {
         for (co::Vertex n : this->in_edges[i]) n.print(false);
-        std::cout << " -> " << i << " -> ";
+        std::cout << " -> " << i << "[" << this->in_degrees[i] << "|" << this->out_degrees[i] << "]"
+                  << " -> ";
         for (co::Vertex n : this->out_edges[i]) n.print(false);
         std::cout << std::endl;
     }
