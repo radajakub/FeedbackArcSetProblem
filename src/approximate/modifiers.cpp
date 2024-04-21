@@ -33,20 +33,14 @@ co::State co::modifiers::improve_worst(co::DGraph &g, co::State &state) {
         }
     }
 
-    int worst_cost = -1;
-    int worst_v = -1;
-    for (int v = 0; v < g.V; ++v) {
-        if (costs[v] > worst_cost) {
-            worst_cost = costs[v];
-            worst_v = v;
-        }
-    }
+    // find the vertex with the highest cost
+    int worst_v = co::argmax(costs);
 
     co::State improved = state;
     co::State new_state(g.V);
     for (int v = 0; v < g.V; ++v) {
         new_state = co::modifiers::swap(g, state, v, worst_v);
-        if (new_state.value < improved.value) {
+        if (new_state.cost < improved.cost) {
             improved = new_state;
         }
     }

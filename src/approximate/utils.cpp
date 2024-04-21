@@ -1,7 +1,5 @@
 #include "utils.h"
 
-#include <iostream>
-
 co::Sampler::Sampler(int V, int seed) {
     this->rng.seed(seed);
     this->dist = std::uniform_real_distribution<double>(0, 1);
@@ -10,6 +8,11 @@ co::Sampler::Sampler(int V, int seed) {
 
 int co::Sampler::sample_vertex() {
     return this->vertex_dist(this->rng);
+}
+
+int co::Sampler::sample_vertex(int start, int end) {
+    std::uniform_int_distribution<int> dist(start, end);
+    return dist(this->rng);
 }
 
 double co::Sampler::sample_prob() {
@@ -32,4 +35,16 @@ int co::Timer::elapsed_time() {
     std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->start_time).count();
     return duration;
+}
+
+int co::argmax(std::vector<int> &vec) {
+    int max_val = -1;
+    int max_idx = -1;
+    for (int i = 0; i < vec.size(); ++i) {
+        if (vec[i] > max_val) {
+            max_val = vec[i];
+            max_idx = i;
+        }
+    }
+    return max_idx;
 }

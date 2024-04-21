@@ -8,7 +8,7 @@ co::State co::solvers::random_greedy(co::DGraph &g, co::Sampler &sampler, co::Ti
     while (!timer.should_stop()) {
         state = co::modifiers::perturbate(g, state, sampler);
 
-        if (state.value < best.value) {
+        if (state.cost < best.cost) {
             best = state;
         }
     }
@@ -27,7 +27,7 @@ co::State co::solvers::greedy_improve(co::DGraph &g, co::Sampler &sampler, co::T
         }
         state = co::modifiers::improve_worst(g, state);
 
-        if (state.value < best.value) {
+        if (state.cost < best.cost) {
             best = state;
         }
     }

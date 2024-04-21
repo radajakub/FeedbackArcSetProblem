@@ -2,10 +2,10 @@
 #define __UTILS_H__
 
 #include <chrono>
+#include <numeric>
 #include <random>
 
 namespace co {
-    // remake to generator class with fixed initalizer (see chat gpt)
     class Sampler {
     public:
         std::mt19937 rng;
@@ -14,8 +14,13 @@ namespace co {
 
         Sampler(int V, int seed);
 
+        // sample random number from the uniform distribution [0, V-1]
         int sample_vertex();
 
+        // sample random number from the uniform distribution [start, end]
+        int sample_vertex(int start, int end);
+
+        // sample random number from the uniform distribution [0, 1]
         double sample_prob();
     };
 
@@ -23,16 +28,21 @@ namespace co {
     public:
         // limit in ms
         int limit;
+        // safety margin in ms
         int safety_margin;
+
         std::chrono::time_point<std::chrono::steady_clock> start_time;
 
-        // limit in s
-        // safety_margin in ms
         Timer(int limit, int safety_margin);
 
+        // returns bool if the time is up for terminating
         bool should_stop();
+
+        // returns the elapsed time in ms
         int elapsed_time();
     };
+
+    int argmax(std::vector<int> &vec);
 };
 
 #endif

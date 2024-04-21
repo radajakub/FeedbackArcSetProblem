@@ -16,7 +16,8 @@ namespace co {
         // number of vertices
         int V;
 
-        int value;
+        // total cost of the current ordering
+        int cost;
 
         // topological ordering of vertices
         std::vector<int> order;
@@ -24,11 +25,13 @@ namespace co {
         // construct empty solution
         State(int V);
 
+        // set order of a vertex
         void set_order(int vertex, int order);
 
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
 
+        // adjusts the costs only for the vertices in changed
         void evaluate_incremental(DGraph &g, co::State &original, std::vector<int> &changed);
 
         void save_solution(DGraph &g, std::string &path);
