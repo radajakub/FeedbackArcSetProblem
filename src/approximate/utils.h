@@ -2,6 +2,7 @@
 #define __UTILS_H__
 
 #include <chrono>
+#include <iostream>
 #include <numeric>
 #include <random>
 
@@ -43,6 +44,8 @@ namespace co {
     };
 
     int argmax(std::vector<int> &vec);
+
+    void print_vector(std::string &name, std::vector<int> &vec);
 };
 
 #endif

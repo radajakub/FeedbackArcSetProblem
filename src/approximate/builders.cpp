@@ -3,8 +3,8 @@
 co::State co::builders::random(co::DGraph &g, co::Sampler &sampler) {
     co::State s(g.V);
 
-    std::iota(s.order.begin(), s.order.end(), 0);
-    std::shuffle(s.order.begin(), s.order.end(), sampler.rng);
+    std::iota(s.ordering.begin(), s.ordering.end(), 0);
+    std::shuffle(s.ordering.begin(), s.ordering.end(), sampler.rng);
 
     return s;
 }

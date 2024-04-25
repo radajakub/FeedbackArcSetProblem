@@ -48,3 +48,11 @@ int co::argmax(std::vector<int> &vec) {
     }
     return max_idx;
 }
+
+void co::print_vector(std::string &name, std::vector<int> &vec) {
+    std::cout << name << ": ";
+    for (int i = 0; i < vec.size(); ++i) {
+        std::cout << vec[i] << " ";
+    }
+    std::cout << std::endl;
+}

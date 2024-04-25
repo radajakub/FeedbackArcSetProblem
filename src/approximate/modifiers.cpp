@@ -3,8 +3,8 @@
 co::State co::modifiers::swap(co::DGraph &g, co::State &state, int u, int v) {
     co::State new_state = state;
 
-    new_state.set_order(u, state.order[v]);
-    new_state.set_order(v, state.order[u]);
+    new_state.set_order(u, state.ordering[v]);
+    new_state.set_order(v, state.ordering[u]);
 
     std::vector<int> changed = {u, v};
 
@@ -24,12 +24,11 @@ co::State co::modifiers::perturbate(co::DGraph &g, co::State &state, co::Sampler
 }
 
 co::State co::modifiers::improve_worst(co::DGraph &g, co::State &state) {
-    // compute costs of vertices
+    // compute outcosts of vertices
     std::vector<int> costs(g.V, 0);
     for (co::Edge &e : g.edges) {
-        if (state.order[e.source] > state.order[e.target]) {
+        if (state.ordering[e.source] > state.ordering[e.target]) {
             costs[e.source] += e.cost;
-            costs[e.target] += e.cost;
         }
     }
 

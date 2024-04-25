@@ -53,11 +53,10 @@ void co::DGraph::print() {
     std::cout << " - |E| = " << this->E << std::endl;
     std::cout << " - |V| = " << this->V << std::endl;
 
-    std::cout << " - Adjacency Lists" << std::endl;
+    std::cout << " - Edges" << std::endl;
     for (int i = 0; i < this->V; ++i) {
         for (co::Vertex n : this->in_edges[i]) n.print(false);
-        std::cout << " -> " << i << "[" << this->in_degrees[i] << "|" << this->out_degrees[i] << "]"
-                  << " -> ";
+        std::cout << " -> " << i << "[" << this->in_degrees[i] << "|" << this->out_degrees[i] << "] -> ";
         for (co::Vertex n : this->out_edges[i]) n.print(false);
         std::cout << std::endl;
     }
