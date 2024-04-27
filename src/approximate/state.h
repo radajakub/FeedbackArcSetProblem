@@ -35,9 +35,9 @@ namespace co {
         void evaluate_incremental(DGraph &g, co::State &original, std::vector<int> &changed);
 
         // transform list of orders saved in this object to a list of vertices
-        std::vector<int> to_vertices();
+        std::vector<int> get_vertex_permutation();
         // save ordered vertices to inner ordering representation
-        void to_ordering(std::vector<int> &vertices);
+        void update_ordering(std::vector<int> &vertex_permutation);
 
         void save_solution(DGraph &g, std::string &path);
         void print_val();

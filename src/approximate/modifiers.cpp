@@ -69,11 +69,11 @@ co::State co::modifiers::best_rotation(co::DGraph &g, co::State &state) {
 
     co::State new_state = state;
     for (int i = 0; i < g.V; ++i) {
-        std::vector<int> vertices = new_state.to_vertices();
+        std::vector<int> vertices = new_state.get_vertex_permutation();
 
         std::rotate(vertices.begin(), vertices.begin() + 1, vertices.end());
 
-        new_state.to_ordering(vertices);
+        new_state.update_ordering(vertices);
         new_state.evaluate_full(g);
         if (new_state.cost < best.cost) {
             best = new_state;

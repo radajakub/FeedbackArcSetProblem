@@ -54,7 +54,7 @@ void co::State::evaluate_incremental(co::DGraph &g, co::State &original, std::ve
     }
 }
 
-std::vector<int> co::State::to_vertices() {
+std::vector<int> co::State::get_vertex_permutation() {
     std::vector<int> vertices(this->V, 0);
     for (int v = 0; v < this->V; ++v) {
         vertices[this->ordering[v]] = v;
@@ -62,9 +62,9 @@ std::vector<int> co::State::to_vertices() {
     return vertices;
 }
 
-void co::State::to_ordering(std::vector<int> &vertices) {
+void co::State::update_ordering(std::vector<int> &vertex_permutation) {
     for (int o = 0; o < this->V; ++o) {
-        this->ordering[vertices[o]] = o;
+        this->ordering[vertex_permutation[o]] = o;
     }
 }
 
