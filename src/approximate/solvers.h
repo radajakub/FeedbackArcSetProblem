@@ -7,7 +7,7 @@
 #include "util.h"
 
 namespace co {
-    namespace solvers {
+    namespace hc {
 
         State random_greedy(DGraph &g, Sampler &sampler, Timer &timer);
 

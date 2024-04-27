@@ -46,3 +46,39 @@ co::State co::modifiers::improve_worst(co::DGraph &g, co::State &state) {
 
     return improved;
 }
+
+co::State co::modifiers::swap_two_worst(co::DGraph &g, co::State &state) {
+    // compute outcosts of vertices
+    std::vector<int> costs(g.V, 0);
+    for (co::Edge &e : g.edges) {
+        if (state.ordering[e.source] > state.ordering[e.target]) {
+            costs[e.source] += e.cost;
+        }
+    }
+
+    // find the two vertices with the highest cost
+    int worst_v = co::argmax(costs);
+    costs[worst_v] = 0;
+    int second_worst_v = co::argmax(costs);
+
+    return co::modifiers::swap(g, state, worst_v, second_worst_v);
+}
+
+co::State co::modifiers::best_rotation(co::DGraph &g, co::State &state) {
+    co::State best = state;
+
+    co::State new_state = state;
+    for (int i = 0; i < g.V; ++i) {
+        std::vector<int> vertices = new_state.to_vertices();
+
+        std::rotate(vertices.begin(), vertices.begin() + 1, vertices.end());
+
+        new_state.to_ordering(vertices);
+        new_state.evaluate_full(g);
+        if (new_state.cost < best.cost) {
+            best = new_state;
+        }
+    }
+
+    return best;
+}

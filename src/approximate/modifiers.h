@@ -18,6 +18,10 @@ namespace co {
 
         // find the vertex with the highest cost and find best position for it
         State improve_worst(DGraph &g, State &state);
+
+        State swap_two_worst(DGraph &g, State &state);
+
+        State best_rotation(DGraph &g, State &state);
     };
 
 };
