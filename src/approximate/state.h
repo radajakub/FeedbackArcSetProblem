@@ -28,6 +28,7 @@ namespace co {
 
         // set order of a vertex
         void set_order(int vertex, int order);
+        void set_order(std::vector<std::pair<int, int>> &indexed_vector);
 
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);

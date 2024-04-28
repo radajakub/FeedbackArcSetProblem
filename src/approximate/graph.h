@@ -44,9 +44,15 @@ namespace co {
 
         // lists of adjacent vertices for easier iterations
         std::vector<std::vector<Vertex>> out_edges;
-        std::vector<int> out_degrees;
         std::vector<std::vector<Vertex>> in_edges;
+
+        // list of degrees for each vertex
+        std::vector<int> out_degrees;
         std::vector<int> in_degrees;
+
+        // list of costs for each vertex
+        std::vector<int> out_costs;
+        std::vector<int> in_costs;
 
         // construct a graph representation frmo a list of edges
         DGraph(std::string &path);

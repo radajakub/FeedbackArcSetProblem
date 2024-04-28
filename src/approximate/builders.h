@@ -14,6 +14,8 @@ namespace co {
         State in_degree(DGraph &g);
         State out_degree(DGraph &g);
 
+        State in_cost(DGraph &g);
+        State out_cost(DGraph &g);
     };
 
 };

@@ -1,5 +1,12 @@
 #include "utils.h"
 
+co::Sampler::Sampler(int V) {
+    std::random_device rd;
+    this->rng = std::mt19937(rd());
+    this->dist = std::uniform_real_distribution<double>(0, 1);
+    this->vertex_dist = std::uniform_int_distribution<int>(0, V - 1);
+}
+
 co::Sampler::Sampler(int V, int seed) {
     this->rng.seed(seed);
     this->dist = std::uniform_real_distribution<double>(0, 1);
@@ -47,6 +54,14 @@ int co::argmax(std::vector<int> &vec) {
         }
     }
     return max_idx;
+}
+
+std::vector<std::pair<int, int>> co::index_vector(std::vector<int> &vector) {
+    std::vector<std::pair<int, int>> indexed(vector.size());
+    for (int i = 0; i < vector.size(); ++i) {
+        indexed[i] = std::make_pair(vector[i], i);
+    }
+    return indexed;
 }
 
 void co::print_vector(std::string &name, std::vector<int> &vec) {

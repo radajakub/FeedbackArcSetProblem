@@ -37,14 +37,20 @@ co::DGraph::DGraph(std::string &path) {
         this->in_edges[i].reserve(this->V);
 
     this->out_degrees.resize(this->V, 0);
+    this->out_costs.resize(this->V, 0);
     this->in_degrees.resize(this->V, 0);
+    this->in_costs.resize(this->V, 0);
 
     // compute adjacency lists and in/out degrees
     for (co::Edge &e : this->edges) {
         this->out_edges[e.source].push_back(co::Vertex(e.target, e.cost));
-        ++(this->out_degrees[e.source]);
         this->in_edges[e.target].push_back(co::Vertex(e.source, e.cost));
+
+        ++(this->out_degrees[e.source]);
         ++(this->in_degrees[e.target]);
+
+        this->out_costs[e.source] += e.cost;
+        this->in_costs[e.target] += e.cost;
     }
 }
 
@@ -56,7 +62,9 @@ void co::DGraph::print() {
     std::cout << " - Edges" << std::endl;
     for (int i = 0; i < this->V; ++i) {
         for (co::Vertex n : this->in_edges[i]) n.print(false);
-        std::cout << " -> " << i << "[" << this->in_degrees[i] << "|" << this->out_degrees[i] << "] -> ";
+        std::cout << "-[" << this->in_degrees[i] << "|" << this->in_costs[i] << "]-> ";
+        std::cout << i;
+        std::cout << " -[" << this->out_degrees[i] << "|" << this->out_costs[i] << "]-> ";
         for (co::Vertex n : this->out_edges[i]) n.print(false);
         std::cout << std::endl;
     }

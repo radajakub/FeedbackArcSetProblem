@@ -13,6 +13,7 @@ namespace co {
         std::uniform_real_distribution<double> dist;
         std::uniform_int_distribution<int> vertex_dist;
 
+        Sampler(int V);
         Sampler(int V, int seed);
 
         // sample random number from the uniform distribution [0, V-1]
@@ -44,6 +45,9 @@ namespace co {
     };
 
     int argmax(std::vector<int> &vec);
+
+    // wrap every item with an index as the second item of the tuple
+    std::vector<std::pair<int, int>> index_vector(std::vector<int> &vector);
 
     void print_vector(std::string &name, std::vector<int> &vec);
 };

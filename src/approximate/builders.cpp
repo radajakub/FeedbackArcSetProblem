@@ -12,10 +12,7 @@ co::State co::builders::random(co::DGraph &g, co::Sampler &sampler) {
 co::State co::builders::in_degree(co::DGraph &g) {
     co::State s(g.V);
 
-    std::vector<std::pair<int, int>> indexed_indegrees(g.V);
-    for (int i = 0; i < g.V; ++i) {
-        indexed_indegrees[i] = std::make_pair(g.in_degrees[i], i);
-    }
+    std::vector<std::pair<int, int>> indexed_indegrees = co::index_vector(g.in_degrees);
 
     // sort by in-degrees
     std::sort(indexed_indegrees.begin(), indexed_indegrees.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
@@ -25,9 +22,7 @@ co::State co::builders::in_degree(co::DGraph &g) {
         return a.first < b.first;
     });
 
-    for (int i = 0; i < g.V; ++i) {
-        s.set_order(indexed_indegrees[i].second, i);
-    }
+    s.set_order(indexed_indegrees);
 
     return s;
 }
@@ -35,10 +30,7 @@ co::State co::builders::in_degree(co::DGraph &g) {
 co::State co::builders::out_degree(co::DGraph &g) {
     co::State s(g.V);
 
-    std::vector<std::pair<int, int>> indexed_outdegrees(g.V);
-    for (int i = 0; i < g.V; ++i) {
-        indexed_outdegrees[i] = std::make_pair(g.out_degrees[i], i);
-    }
+    std::vector<std::pair<int, int>> indexed_outdegrees = co::index_vector(g.out_degrees);
 
     // sort by in-degrees
     std::sort(indexed_outdegrees.begin(), indexed_outdegrees.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
@@ -48,9 +40,43 @@ co::State co::builders::out_degree(co::DGraph &g) {
         return a.first > b.first;
     });
 
-    for (int i = 0; i < g.V; ++i) {
-        s.set_order(indexed_outdegrees[i].second, i);
-    }
+    s.set_order(indexed_outdegrees);
+
+    return s;
+}
+
+co::State co::builders::in_cost(co::DGraph &g) {
+    co::State s(g.V);
+
+    std::vector<std::pair<int, int>> indexed_incosts = co::index_vector(g.in_costs);
+
+    // sort by in-costs from lowest to highest
+    std::sort(indexed_incosts.begin(), indexed_incosts.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+        if (a.first == b.first) {
+            return g.out_costs[a.second] > g.out_costs[b.second];
+        }
+        return a.first < b.first;
+    });
+
+    s.set_order(indexed_incosts);
+
+    return s;
+}
+
+co::State co::builders::out_cost(co::DGraph &g) {
+    co::State s(g.V);
+
+    std::vector<std::pair<int, int>> indexed_outcosts = co::index_vector(g.out_costs);
+
+    // sort by in-costs from lowest to highest
+    std::sort(indexed_outcosts.begin(), indexed_outcosts.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+        if (a.first == b.first) {
+            return g.in_costs[a.second] < g.in_costs[b.second];
+        }
+        return a.first > b.first;
+    });
+
+    s.set_order(indexed_outcosts);
 
     return s;
 }

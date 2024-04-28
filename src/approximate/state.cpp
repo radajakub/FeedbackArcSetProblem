@@ -10,6 +10,11 @@ void co::State::set_order(int vertex, int order) {
     this->ordering[vertex] = order;
 }
 
+void co::State::set_order(std::vector<std::pair<int, int>> &indexed_vector) {
+    for (int i = 0; i < indexed_vector.size(); ++i)
+        this->ordering[indexed_vector[i].second] = i;
+}
+
 void co::State::evaluate_full(co::DGraph &g) {
     this->cost = 0;
     // sum over all edges if the source is after the target in the ordering
