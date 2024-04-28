@@ -27,6 +27,9 @@ namespace co {
 
         std::vector<State> init(DGraph &g, int n, Sampler &sampler);
 
+        // select k states (indices) from population by running tournament selection
+        std::vector<int> select(std::vector<State> &population, int k, int tournamen_size, Sampler &sampler);
+
         State cross(DGraph &g, State &parent1, State &parent2, Sampler &sampler);
 
         State mutate(DGraph &g, State &state, Sampler &sampler);

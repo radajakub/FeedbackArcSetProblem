@@ -12,15 +12,19 @@ namespace co {
         std::mt19937 rng;
         std::uniform_real_distribution<double> dist;
         std::uniform_int_distribution<int> vertex_dist;
+        std::uniform_int_distribution<int> population_dist;
 
-        Sampler(int V);
-        Sampler(int V, int seed);
+        Sampler(int V, int population_size);
+        Sampler(int V, int population_size, int seed);
 
         // sample random number from the uniform distribution [0, V-1]
         int sample_vertex();
 
         // sample random number from the uniform distribution [start, end]
         int sample_vertex(int start, int end);
+
+        // samples an index from population size
+        int sample_population();
 
         // sample random number from the uniform distribution [0, 1]
         double sample_prob();

@@ -27,12 +27,13 @@ int main(int argc, char *argv[]) {
     co::DGraph g(input_path);
     // g.print();
 
+    // set configuration of ea
+    co::ea::EvolutionConfiguration config(50, 4, 5, 0.3);
+
     // intialize random number generator with seed
-    co::Sampler sampler(g.V, 1);
+    co::Sampler sampler(g.V, config.population_size, 1);
     // initialize random number generator without seed
     // co::Sampler sampler(g.V);
-
-    co::ea::EvolutionConfiguration config(10, 4, 5, 0.3);
 
     co::State result = co::ea::evolve(g, config, sampler, timer);
 
