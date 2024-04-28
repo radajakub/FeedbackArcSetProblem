@@ -3,6 +3,7 @@
 #include <string>
 
 #include "builders.h"
+#include "ea.h"
 #include "graph.h"
 #include "modifiers.h"
 #include "solvers.h"
@@ -24,18 +25,19 @@ int main(int argc, char *argv[]) {
 
     // build graph from input
     co::DGraph g(input_path);
-    g.print();
+    // g.print();
 
     // intialize random number generator with seed
     co::Sampler sampler(g.V, 1);
     // initialize random number generator without seed
     // co::Sampler sampler(g.V);
 
-    // co::State result = co::solvers::random_greedy(g, sampler, timer);
-    // co::State result = co::hc::greedy_improve(g, sampler, timer);
+    co::ea::EvolutionConfiguration config(10, 4, 5, 0.3);
+
+    co::State result = co::ea::evolve(g, config, sampler, timer);
 
     // state.save_solution(g, output_path);
-    // result.println(g);
+    result.println(g);
 
     return 0;
 }
