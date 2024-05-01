@@ -19,6 +19,15 @@ int co::Sampler::sample_vertex() {
     return this->vertex_dist(this->rng);
 }
 
+std::pair<int, int> co::Sampler::sample_vertex_pair() {
+    int v1 = this->vertex_dist(this->rng);
+    int v2;
+    do {
+        v2 = this->vertex_dist(this->rng);
+    } while (v1 == v2);
+    return v1 < v2 ? std::make_pair(v1, v2) : std::make_pair(v2, v1);
+}
+
 int co::Sampler::sample_vertex(int start, int end) {
     std::uniform_int_distribution<int> dist(start, end);
     return dist(this->rng);
@@ -26,6 +35,14 @@ int co::Sampler::sample_vertex(int start, int end) {
 
 int co::Sampler::sample_population() {
     return this->population_dist(this->rng);
+}
+
+int co::Sampler::sample_population(std::vector<bool> &tabu) {
+    int sample;
+    do {
+        sample = this->population_dist(this->rng);
+    } while (tabu[sample]);
+    return sample;
 }
 
 double co::Sampler::sample_prob() {
@@ -68,6 +85,11 @@ std::vector<std::pair<int, int>> co::index_vector(std::vector<int> &vector) {
         indexed[i] = std::make_pair(vector[i], i);
     }
     return indexed;
+}
+
+int co::get_idx(std::vector<int> &vec, int val) {
+    std::vector<int>::iterator it = std::find(vec.begin(), vec.end(), val);
+    return std::distance(vec.begin(), it);
 }
 
 void co::print_vector(std::string &name, std::vector<int> &vec) {

@@ -3,7 +3,7 @@
 co::State::State(int V) {
     this->V = V;
     this->cost = std::numeric_limits<int>::max();
-    this->ordering.resize(V, 0);
+    this->ordering.resize(V, -1);
 }
 
 void co::State::set_order(int vertex, int order) {
@@ -13,6 +13,20 @@ void co::State::set_order(int vertex, int order) {
 void co::State::set_order(std::vector<std::pair<int, int>> &indexed_vector) {
     for (int i = 0; i < indexed_vector.size(); ++i)
         this->ordering[indexed_vector[i].second] = i;
+}
+
+std::vector<int> co::State::to_vertices() {
+    std::vector<int> vertices(this->V);
+    for (int i = 0; i < this->V; ++i) {
+        vertices[this->ordering[i]] = i;
+    }
+    return vertices;
+}
+
+void co::State::set_vertices(std::vector<int> &vertices) {
+    for (int i = 0; i < this->V; ++i) {
+        this->ordering[vertices[i]] = i;
+    }
 }
 
 void co::State::evaluate_full(co::DGraph &g) {
@@ -59,18 +73,28 @@ void co::State::evaluate_incremental(co::DGraph &g, co::State &original, std::ve
     }
 }
 
-std::vector<int> co::State::get_vertex_permutation() {
-    std::vector<int> vertices(this->V, 0);
-    for (int v = 0; v < this->V; ++v) {
-        vertices[this->ordering[v]] = v;
-    }
-    return vertices;
+void co::State::print_val() {
+    std::cout << this->cost << std::endl;
 }
 
-void co::State::update_ordering(std::vector<int> &vertex_permutation) {
-    for (int o = 0; o < this->V; ++o) {
-        this->ordering[vertex_permutation[o]] = o;
+void co::State::print_ordering() {
+    std::cout << "[" << this->cost << "] ";
+
+    for (int v : this->ordering) {
+        std::cout << v << " ";
     }
+
+    std::cout << std::endl;
+}
+
+void co::State::print_vertices() {
+    std::cout << "[" << this->cost << "] ";
+
+    for (int v : this->to_vertices()) {
+        std::cout << v << " ";
+    }
+
+    std::cout << std::endl;
 }
 
 void co::State::save_solution(co::DGraph &g, std::string &path) {
@@ -89,22 +113,4 @@ void co::State::save_solution(co::DGraph &g, std::string &path) {
     std::cout << std::endl;
 
     f.close();
-}
-
-void co::State::print_val() {
-    std::cout << this->cost << std::endl;
-}
-
-void co::State::println(co::DGraph &g) {
-    std::cout << "[" << this->cost << "] ";
-
-    for (int o = 0; o < g.V; ++o) {
-        for (int v = 0; v < g.V; ++v) {
-            if (this->ordering[v] == o) {
-                std::cout << v << " ";
-            }
-        }
-    }
-
-    std::cout << std::endl;
 }

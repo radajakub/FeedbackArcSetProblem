@@ -15,10 +15,8 @@ namespace co {
     public:
         // number of vertices
         int V;
-
         // total cost of the current ordering
         int cost;
-
         // topological ordering of vertices
         // ordering[v] = order for all v in V
         std::vector<int> ordering;
@@ -30,19 +28,21 @@ namespace co {
         void set_order(int vertex, int order);
         void set_order(std::vector<std::pair<int, int>> &indexed_vector);
 
+        // get the vertex permutation instead of the order
+        std::vector<int> to_vertices();
+        // save the vertex permutation as ordering for faster computation
+        void set_vertices(std::vector<int> &vertices);
+
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
         // adjusts the costs only for the vertices in changed
         void evaluate_incremental(DGraph &g, co::State &original, std::vector<int> &changed);
 
-        // transform list of orders saved in this object to a list of vertices
-        std::vector<int> get_vertex_permutation();
-        // save ordered vertices to inner ordering representation
-        void update_ordering(std::vector<int> &vertex_permutation);
+        void print_val();
+        void print_ordering();
+        void print_vertices();
 
         void save_solution(DGraph &g, std::string &path);
-        void print_val();
-        void println(DGraph &g);
     };
 };
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <numeric>
 #include <random>
+#include <utility>
 
 namespace co {
     class Sampler {
@@ -19,12 +20,14 @@ namespace co {
 
         // sample random number from the uniform distribution [0, V-1]
         int sample_vertex();
+        std::pair<int, int> sample_vertex_pair();
 
         // sample random number from the uniform distribution [start, end]
         int sample_vertex(int start, int end);
 
         // samples an index from population size
         int sample_population();
+        int sample_population(std::vector<bool> &tabu);
 
         // sample random number from the uniform distribution [0, 1]
         double sample_prob();
@@ -52,6 +55,8 @@ namespace co {
 
     // wrap every item with an index as the second item of the tuple
     std::vector<std::pair<int, int>> index_vector(std::vector<int> &vector);
+
+    int get_idx(std::vector<int> &vec, int val);
 
     void print_vector(std::string &name, std::vector<int> &vec);
 };
