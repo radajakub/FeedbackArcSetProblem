@@ -1,18 +1,16 @@
 #include "utils.h"
 
-co::Sampler::Sampler(int V, int population_size) {
+co::Sampler::Sampler(int V) {
     std::random_device rd;
     this->rng = std::mt19937(rd());
     this->dist = std::uniform_real_distribution<double>(0, 1);
     this->vertex_dist = std::uniform_int_distribution<int>(0, V - 1);
-    this->population_dist = std::uniform_int_distribution<int>(0, population_size - 1);
 }
 
-co::Sampler::Sampler(int V, int population_size, int seed) {
+co::Sampler::Sampler(int V, int seed) {
     this->rng.seed(seed);
     this->dist = std::uniform_real_distribution<double>(0, 1);
     this->vertex_dist = std::uniform_int_distribution<int>(0, V - 1);
-    this->population_dist = std::uniform_int_distribution<int>(0, population_size - 1);
 }
 
 int co::Sampler::sample_vertex() {
@@ -33,16 +31,15 @@ int co::Sampler::sample_vertex(int start, int end) {
     return dist(this->rng);
 }
 
-int co::Sampler::sample_population() {
-    return this->population_dist(this->rng);
-}
+std::vector<int> co::Sampler::sample_population(int k, int n) {
+    // create vector of indices
+    std::vector<int> indices(n);
+    std::iota(indices.begin(), indices.end(), 0);
 
-int co::Sampler::sample_population(std::vector<bool> &tabu) {
-    int sample;
-    do {
-        sample = this->population_dist(this->rng);
-    } while (tabu[sample]);
-    return sample;
+    std::shuffle(indices.begin(), indices.end(), this->rng);
+    indices.resize(k);
+
+    return indices;
 }
 
 double co::Sampler::sample_prob() {

@@ -28,17 +28,17 @@ int main(int argc, char *argv[]) {
     // g.print();
 
     // set configuration of ea
-    co::ea::EvolutionConfiguration config(50, 4, 5, 0.3);
+    co::ea::EvolutionConfiguration config(100, 4, 3, 1.0);
 
     // intialize random number generator with seed
-    co::Sampler sampler(g.V, config.population_size, 1);
+    // co::Sampler sampler(g.V, config.population_size, 1);
     // initialize random number generator without seed
-    // co::Sampler sampler(g.V);
+    co::Sampler sampler(g.V, config.population_size);
 
     co::State result = co::ea::evolve(g, config, sampler, timer);
 
     // state.save_solution(g, output_path);
-    result.println(g);
+    // result.println(g);
 
     return 0;
 }

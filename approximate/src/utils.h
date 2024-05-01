@@ -1,6 +1,7 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <numeric>
@@ -13,10 +14,9 @@ namespace co {
         std::mt19937 rng;
         std::uniform_real_distribution<double> dist;
         std::uniform_int_distribution<int> vertex_dist;
-        std::uniform_int_distribution<int> population_dist;
 
-        Sampler(int V, int population_size);
-        Sampler(int V, int population_size, int seed);
+        Sampler(int V);
+        Sampler(int V, int seed);
 
         // sample random number from the uniform distribution [0, V-1]
         int sample_vertex();
@@ -25,9 +25,7 @@ namespace co {
         // sample random number from the uniform distribution [start, end]
         int sample_vertex(int start, int end);
 
-        // samples an index from population size
-        int sample_population();
-        int sample_population(std::vector<bool> &tabu);
+        std::vector<int> sample_population(int k, int n);
 
         // sample random number from the uniform distribution [0, 1]
         double sample_prob();
