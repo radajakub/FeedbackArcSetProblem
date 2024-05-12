@@ -9,7 +9,7 @@ namespace co {
 
     namespace builders {
 
-        State random(DGraph &g, Sampler &sampler);
+        State random(DGraph &g, std::mt19937 &rng);
 
         State in_degree(DGraph &g);
         State out_degree(DGraph &g);

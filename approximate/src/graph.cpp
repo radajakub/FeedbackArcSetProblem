@@ -42,7 +42,7 @@ co::DGraph::DGraph(int V, std::vector<Edge> &edges, std::vector<int> &vertex_map
 }
 
 std::vector<std::pair<int, int>> co::DGraph::out_cost_vertices() {
-    std::vector<std::pair<int, int>> indexed_list = co::index_vector(this->out_costs);
+    std::vector<std::pair<int, int>> indexed_list = co::enumerate(this->out_costs);
 
     std::sort(indexed_list.begin(), indexed_list.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
         if (a.first == b.first) {
@@ -55,7 +55,7 @@ std::vector<std::pair<int, int>> co::DGraph::out_cost_vertices() {
 }
 
 std::vector<std::pair<int, int>> co::DGraph::in_cost_vertices() {
-    std::vector<std::pair<int, int>> indexed_list = co::index_vector(this->in_costs);
+    std::vector<std::pair<int, int>> indexed_list = co::enumerate(this->in_costs);
 
     std::sort(indexed_list.begin(), indexed_list.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
         if (a.first == b.first) {
@@ -68,7 +68,7 @@ std::vector<std::pair<int, int>> co::DGraph::in_cost_vertices() {
 }
 
 std::vector<std::pair<int, int>> co::DGraph::out_degree_vertices() {
-    std::vector<std::pair<int, int>> indexed_list = co::index_vector(this->out_costs);
+    std::vector<std::pair<int, int>> indexed_list = co::enumerate(this->out_costs);
 
     std::sort(indexed_list.begin(), indexed_list.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
         if (a.first == b.first) {
@@ -81,7 +81,7 @@ std::vector<std::pair<int, int>> co::DGraph::out_degree_vertices() {
 }
 
 std::vector<std::pair<int, int>> co::DGraph::in_degree_vertices() {
-    std::vector<std::pair<int, int>> indexed_list = co::index_vector(this->out_costs);
+    std::vector<std::pair<int, int>> indexed_list = co::enumerate(this->out_costs);
 
     std::sort(indexed_list.begin(), indexed_list.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
         if (a.first == b.first) {

@@ -1,10 +1,10 @@
 #include "builders.h"
 
-co::State co::builders::random(co::DGraph &g, co::Sampler &sampler) {
+co::State co::builders::random(co::DGraph &g, std::mt19937 &rng) {
     co::State s(g.V);
 
     std::iota(s.ordering.begin(), s.ordering.end(), 0);
-    std::shuffle(s.ordering.begin(), s.ordering.end(), sampler.rng);
+    std::shuffle(s.ordering.begin(), s.ordering.end(), rng);
 
     return s;
 }

@@ -29,20 +29,20 @@ void co::State::set_vertices(std::vector<int> &vertices) {
     }
 }
 
-std::string co::State::hash() {
-    std::string hash = "";
-    for (int v : this->ordering) {
-        hash += std::to_string(v);
-    }
-    return hash;
-}
-
 void co::State::evaluate_full(co::DGraph &g) {
     this->cost = 0;
     // sum over all edges if the source is after the target in the ordering
-    for (co::Edge &e : g.edges) {
-        if (this->ordering[e.source] > this->ordering[e.target]) {
-            this->cost += e.cost;
+    for (int u = 0; u < g.V; ++u) {
+        // allow evaluation of partial states
+        if (this->ordering[u] == -1) {
+            this->is_full = false;
+            continue;
+        }
+
+        for (co::Vertex &v : g.out_edges[u]) {
+            if (this->ordering[u] > this->ordering[v.vertex]) {
+                this->cost += v.cost;
+            }
         }
     }
 }
@@ -139,7 +139,7 @@ void co::IncrementalState::place_vertex(int vertex, co::DGraph &g) {
     }
 }
 
-int co::IncrementalState::most_expensive_cost(co::DGraph &g, std::vector<int> &vertices) {
+int co::IncrementalState::cheapest_cost(co::DGraph &g, std::vector<int> &vertices) {
     int min_cost = 0;
     for (int vertex : vertices) {
         int subcost = 0;

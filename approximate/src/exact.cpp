@@ -34,7 +34,7 @@ co::State co::branch_and_bound(co::DGraph &g) {
             continue;
         }
 
-        int most_expensive = current.most_expensive_cost(g, vertices);
+        int most_expensive = current.cheapest_cost(g, vertices);
         if (current.cost + most_expensive > best_cost) {
             continue;
         }

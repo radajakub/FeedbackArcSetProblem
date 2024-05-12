@@ -20,6 +20,9 @@ namespace co {
         // total cost of the current ordering
         int cost;
 
+        // bool indicating if every state has assigned ordering
+        bool is_full;
+
         // topological ordering of vertices
         // ordering[v] = order for all v in V
         // i.e. permutation 0 3 1 2 is represented as 0 2 3 1
@@ -37,8 +40,6 @@ namespace co {
         // save the vertex permutation as ordering for faster computation
         void set_vertices(std::vector<int> &vertices);
 
-        std::string hash();
-
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
         // adjusts the costs only for the vertices in changed
@@ -48,7 +49,6 @@ namespace co {
         void print_ordering();
         void print_vertices();
 
-        void print_solution(DGraph &g);
         void save_solution(DGraph &g, std::ofstream &f);
     };
 
@@ -65,7 +65,7 @@ namespace co {
 
         void place_vertex(int vertex, DGraph &g);
 
-        int most_expensive_cost(DGraph &g, std::vector<int> &vertices);
+        int cheapest_cost(DGraph &g, std::vector<int> &vertices);
 
         std::vector<int> to_vertices();
         State to_state();

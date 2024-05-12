@@ -1,11 +1,14 @@
+#include <chrono>
 #include <iostream>
 
+#include "alns.h"
 #include "exact.h"
 #include "graph.h"
-#include "solvers.h"
+#include "save.h"
 #include "utils.h"
 
 int EXACT_THRESHOLD = 5;
+int SAFETY_MARGIN_MS = 100;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
@@ -18,12 +21,10 @@ int main(int argc, char *argv[]) {
     std::string time_limit = argv[3];
 
     // start timer
-    co::Timer timer(std::stoi(time_limit), 200);
-
-    co::Sampler sampler;
+    std::chrono::milliseconds limit_ms(std::stoi(time_limit) * 1000 - SAFETY_MARGIN_MS);
+    std::chrono::steady_clock::time_point deadline = std::chrono::steady_clock::now() + limit_ms;
 
     co::InputGraph input_graph(input_path);
-
     std::vector<co::DGraph> subgraphs = input_graph.condense();
 
     // split the components into small and big subgraphs
@@ -44,35 +45,16 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<co::State> big_solutions;
-
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
     for (int i = 0; i < big_subgraphs.size(); ++i) {
         // todo: fix timers (it works now because there is always only one graph to solve approximately)
-        co::State s = co::hill_climber(big_subgraphs[i], timer, sampler);
+        co::ALNS alns(0, deadline);
+        co::State s = alns.solve(big_subgraphs[i]);
         big_solutions.push_back(s);
     }
 
-    std::ofstream output_file(output_path, std::ios_base::out);
-
-    int total_cost = 0;
-    for (co::State &s : small_solutions) {
-        total_cost += s.cost;
-    }
-    for (co::State &s : big_solutions) {
-        total_cost += s.cost;
-    }
-
-    output_file << total_cost << std::endl;
-
-    for (int i = 0; i < small_solutions.size(); ++i) {
-        small_solutions[i].save_solution(small_subgraphs[i], output_file);
-    }
-
-    for (int i = 0; i < big_solutions.size(); ++i) {
-        big_solutions[i].save_solution(big_subgraphs[i], output_file);
-    }
-
-    output_file.close();
+    // save solution to the output file
+    co::save_solutions(small_solutions, small_subgraphs, big_solutions, big_subgraphs, output_path);
 
     return 0;
 }
