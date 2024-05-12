@@ -2,7 +2,7 @@
 
 #include "exact.h"
 #include "graph.h"
-#include "hill_climber.h"
+#include "solvers.h"
 #include "utils.h"
 
 int EXACT_THRESHOLD = 5;

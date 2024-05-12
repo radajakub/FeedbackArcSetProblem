@@ -64,3 +64,18 @@ void co::print_vector(std::string &name, std::vector<int> &vec) {
     }
     std::cout << std::endl;
 }
+
+int co::sample_v(int V, co::Sampler &sampler) {
+    std::uniform_int_distribution<int> dist(0, V - 1);
+    return dist(sampler.rng);
+}
+
+std::pair<int, int> co::sample_v_pair(int V, co::Sampler &sampler) {
+    std::uniform_int_distribution<int> dist(0, V - 1);
+    int u = dist(sampler.rng);
+    int v = dist(sampler.rng);
+    while (u == v) {
+        v = dist(sampler.rng);
+    }
+    return u < v ? std::make_pair(u, v) : std::make_pair(v, u);
+}

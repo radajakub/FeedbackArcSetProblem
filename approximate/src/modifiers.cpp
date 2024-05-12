@@ -13,15 +13,11 @@ co::State co::modifiers::swap(co::DGraph &g, co::State &state, int u, int v) {
     return new_state;
 }
 
-// co::State co::modifiers::perturbate(co::DGraph &g, co::State &state, co::Sampler &sampler) {
-//     int u = sampler.sample_vertex();
-//     int v = sampler.sample_vertex();
-//     while (u == v) {
-//         v = sampler.sample_vertex();
-//     }
+co::State co::modifiers::perturbate(co::DGraph &g, co::State &state, co::Sampler &sampler) {
+    std::pair<int, int> vs = co::sample_v_pair(g.V, sampler);
 
-//     return co::modifiers::swap(g, state, u, v);
-// }
+    return co::modifiers::swap(g, state, vs.first, vs.second);
+}
 
 co::State co::modifiers::improve_worst(co::DGraph &g, co::State &state) {
     // compute outcosts of vertices

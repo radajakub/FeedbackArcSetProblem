@@ -1,4 +1,4 @@
-#include "hill_climber.h"
+#include "solvers.h"
 
 co::State co::hill_climber(co::DGraph &g, co::Timer &timer, co::Sampler &sampler) {
     int best_cost = std::numeric_limits<int>::max();
@@ -22,7 +22,7 @@ co::State co::hill_climber(co::DGraph &g, co::Timer &timer, co::Sampler &sampler
 
         // improve it while possible
         while (!timer.should_stop()) {
-            co::State improved = co::modifiers::improve_worst(g, current);
+            co::State improved = co::modifiers::random_best_shift(g, current, sampler);
             if (improved.ordering == current.ordering) {
                 break;
             }

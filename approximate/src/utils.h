@@ -45,6 +45,9 @@ namespace co {
     int get_idx(std::vector<int> &vec, int val);
 
     void print_vector(std::string &name, std::vector<int> &vec);
+
+    int sample_v(int V, Sampler &sampler);
+    std::pair<int, int> sample_v_pair(int V, Sampler &sampler);
 };
 
 #endif

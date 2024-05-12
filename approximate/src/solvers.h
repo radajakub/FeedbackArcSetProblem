@@ -1,5 +1,5 @@
-#ifndef __HILL_CLIMBER_H__
-#define __HILL_CLIMBER_H__
+#ifndef __SOLVERS_H__
+#define __SOLVERS_H__
 
 #include <limits>
 #include <unordered_set>
