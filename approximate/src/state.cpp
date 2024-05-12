@@ -97,20 +97,98 @@ void co::State::print_vertices() {
     std::cout << std::endl;
 }
 
-void co::State::save_solution(co::DGraph &g, std::string &path) {
-    std::ofstream f(path, std::ios_base::out);
-    f << this->cost << std::endl;
-
+void co::State::save_solution(co::DGraph &g, std::ofstream &f) {
     // for every vertex, print the edges that end in a vertex before in the ordering
     for (int start = 0; start < this->V; ++start) {
         for (co::Vertex &end : g.out_edges[start]) {
             if (this->ordering[start] > this->ordering[end.vertex]) {
                 // add 1 to vertices to shift to 1-based indexing
-                f << start + 1 << " " << end.vertex + 1 << std::endl;
+                f << g.vertex_map[start] + 1 << " " << g.vertex_map[end.vertex] + 1 << std::endl;
             }
         }
     }
-    std::cout << std::endl;
+}
 
-    f.close();
+co::IncrementalState::IncrementalState(int V) : V(V), cost(0), placed(0) {
+    this->ordering.resize(V, -1);
+}
+
+void co::IncrementalState::place_vertex(int vertex, co::DGraph &g) {
+    // place the vertex
+    this->ordering[vertex] = this->placed++;
+
+    // add outgoing edge costs
+    for (co::Vertex &u : g.out_edges[vertex]) {
+        if (this->ordering[u.vertex] != -1 && this->ordering[vertex] > this->ordering[u.vertex]) {
+            this->cost += u.cost;
+        }
+    }
+
+    for (co::Vertex &u : g.in_edges[vertex]) {
+        if (this->ordering[u.vertex] != -1 && this->ordering[u.vertex] > this->ordering[vertex]) {
+            this->cost += u.cost;
+        }
+    }
+}
+
+int co::IncrementalState::most_expensive_cost(co::DGraph &g, std::vector<int> &vertices) {
+    int min_cost = 0;
+    for (int vertex : vertices) {
+        int subcost = 0;
+
+        for (co::Vertex &u : g.out_edges[vertex]) {
+            if (this->ordering[u.vertex] != -1 && this->ordering[vertex] > this->ordering[u.vertex]) {
+                subcost += u.cost;
+            }
+        }
+
+        for (co::Vertex &u : g.in_edges[vertex]) {
+            if (this->ordering[u.vertex] != -1 && this->ordering[u.vertex] > this->ordering[vertex]) {
+                subcost += u.cost;
+            }
+        }
+
+        min_cost = std::min(min_cost, subcost);
+    }
+
+    return min_cost;
+}
+
+co::State co::IncrementalState::to_state() {
+    co::State state(this->V);
+    state.cost = this->cost;
+    state.ordering = this->ordering;
+    return state;
+}
+
+void co::IncrementalState::print_val() {
+    std::cout << this->cost << std::endl;
+}
+
+void co::IncrementalState::print_ordering() {
+    std::cout << "[" << this->cost << "] ";
+
+    for (int v : this->ordering) {
+        std::cout << v << " ";
+    }
+
+    std::cout << std::endl;
+}
+
+void co::IncrementalState::print_vertices() {
+    std::cout << "[" << this->cost << "] ";
+
+    for (int v : this->to_vertices()) {
+        std::cout << v << " ";
+    }
+
+    std::cout << std::endl;
+}
+
+std::vector<int> co::IncrementalState::to_vertices() {
+    std::vector<int> vertices(this->V);
+    for (int i = 0; i < this->V; ++i) {
+        vertices[this->ordering[i]] = i;
+    }
+    return vertices;
 }

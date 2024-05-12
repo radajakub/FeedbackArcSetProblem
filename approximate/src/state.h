@@ -15,10 +15,13 @@ namespace co {
     public:
         // number of vertices
         int V;
+
         // total cost of the current ordering
         int cost;
+
         // topological ordering of vertices
         // ordering[v] = order for all v in V
+        // i.e. permutation 0 3 1 2 is represented as 0 2 3 1
         std::vector<int> ordering;
 
         // construct empty solution
@@ -42,8 +45,33 @@ namespace co {
         void print_ordering();
         void print_vertices();
 
-        void save_solution(DGraph &g, std::string &path);
+        void print_solution(DGraph &g);
+        void save_solution(DGraph &g, std::ofstream &f);
     };
+
+    class IncrementalState {
+    public:
+        int V;
+        int cost;
+
+        int placed;
+
+        std::vector<int> ordering;
+
+        IncrementalState(int V);
+
+        void place_vertex(int vertex, DGraph &g);
+
+        int most_expensive_cost(DGraph &g, std::vector<int> &vertices);
+
+        std::vector<int> to_vertices();
+        State to_state();
+
+        void print_val();
+        void print_ordering();
+        void print_vertices();
+    };
+
 };
 
 #endif

@@ -1,25 +1,14 @@
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#ifndef __GRAPH_H__
+#define __GRAPH_H__
 
 #include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <string>
+#include <stack>
 #include <vector>
 
+#include "utils.h"
+
 namespace co {
-
-    // representation for adjacency list with costs
-    class Vertex {
-    public:
-        int vertex;
-        int cost;
-
-        Vertex(int vertex, int cost) : vertex(vertex), cost(cost) {}
-
-        void print(bool newLine);
-    };
-
     class Edge {
     public:
         int source;
@@ -31,18 +20,25 @@ namespace co {
         void print();
     };
 
+    class Vertex {
+    public:
+        int vertex;
+        int cost;
+
+        Vertex(int vertex, int cost) : vertex(vertex), cost(cost) {}
+
+        void print();
+    };
+
     class DGraph {
     public:
-        // |E|
+        int V;
         int E;
 
-        // |V|
-        int V;
-
-        // list of all edges
+        std::vector<int> vertex_map;
         std::vector<Edge> edges;
 
-        // lists of adjacent vertices for easier iterations
+        // list of out and in edges for each vertex
         std::vector<std::vector<Vertex>> out_edges;
         std::vector<std::vector<Vertex>> in_edges;
 
@@ -54,12 +50,31 @@ namespace co {
         std::vector<int> out_costs;
         std::vector<int> in_costs;
 
-        // construct a graph representation frmo a list of edges
-        DGraph(std::string &path);
+        DGraph(int V, std::vector<Edge> &edges, std::vector<int> &vertex_map);
 
-        // print graph information
+        std::vector<std::pair<int, int>> out_cost_vertices();
+        std::vector<std::pair<int, int>> in_cost_vertices();
+        std::vector<std::pair<int, int>> out_degree_vertices();
+        std::vector<std::pair<int, int>> in_degree_vertices();
+
+        void print();
+    };
+
+    class InputGraph {
+    public:
+        int V;
+        int E;
+
+        std::vector<Edge> edges;
+
+        InputGraph(std::string &path);
+
+        std::vector<DGraph> condense();
+        void strong_connect(int v, int &index, std::stack<int> &stack, std::vector<int> &indices, std::vector<int> &lowlinks, std::vector<bool> &onstacks, std::vector<co::DGraph> &subgraphs);
+
         void print();
     };
 
 };
+
 #endif

@@ -13,19 +13,9 @@ namespace co {
     public:
         std::mt19937 rng;
         std::uniform_real_distribution<double> dist;
-        std::uniform_int_distribution<int> vertex_dist;
 
-        Sampler(int V);
-        Sampler(int V, int seed);
-
-        // sample random number from the uniform distribution [0, V-1]
-        int sample_vertex();
-        std::pair<int, int> sample_vertex_pair();
-
-        // sample random number from the uniform distribution [start, end]
-        int sample_vertex(int start, int end);
-
-        std::vector<int> sample_population(int k, int n);
+        Sampler();
+        Sampler(int seed);
 
         // sample random number from the uniform distribution [0, 1]
         double sample_prob();
