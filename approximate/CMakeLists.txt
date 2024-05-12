@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -march=native -pthread")
 
-add_executable(solve src/main.cpp src/utils.cpp src/graph.cpp src/state.cpp src/exact.cpp src/builders.cpp)
+add_executable(solve src/main.cpp src/utils.cpp src/graph.cpp src/state.cpp src/exact.cpp src/builders.cpp src/hill_climber.cpp src/modifiers.cpp)

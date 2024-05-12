@@ -2,6 +2,7 @@
 
 #include "exact.h"
 #include "graph.h"
+#include "hill_climber.h"
 #include "utils.h"
 
 int EXACT_THRESHOLD = 8;
@@ -18,6 +19,8 @@ int main(int argc, char *argv[]) {
 
     // start timer
     co::Timer timer(std::stoi(time_limit), 100);
+
+    co::Sampler sampler(42);
 
     co::InputGraph input_graph(input_path);
 
@@ -42,9 +45,10 @@ int main(int argc, char *argv[]) {
 
     std::vector<co::State> big_solutions;
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
-    // for (co::DGraph &g : big_subgraphs) {
-    //     big_solutions.push_back(co::branch_and_bound(g));
-    // }
+    for (co::DGraph &g : big_subgraphs) {
+        co::State s = co::hill_climber(g, timer, sampler);
+        big_solutions.push_back(s);
+    }
 
     std::ofstream output_file(output_path, std::ios_base::out);
 
