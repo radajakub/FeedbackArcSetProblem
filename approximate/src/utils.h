@@ -25,8 +25,6 @@ namespace co {
     public:
         // limit in ms
         int limit;
-        // safety margin in ms
-        int safety_margin;
 
         std::chrono::time_point<std::chrono::steady_clock> start_time;
 

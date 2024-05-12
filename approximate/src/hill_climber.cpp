@@ -5,8 +5,10 @@ co::State co::hill_climber(co::DGraph &g, co::Timer &timer, co::Sampler &sampler
     co::State best(g.V);
 
     int iters = 0;
+    co::State current(g.V);
+
     while (!timer.should_stop()) {
-        co::State current = co::builders::random(g, sampler);
+        current = co::builders::random(g, sampler);
         if (iters == 0) {
             current = co::builders::in_cost(g);
         } else if (iters == 1) {
@@ -20,10 +22,11 @@ co::State co::hill_climber(co::DGraph &g, co::Timer &timer, co::Sampler &sampler
 
         // improve it while possible
         while (!timer.should_stop()) {
-            co::State improved = co::modifiers::ls(g, current, sampler);
-            if (improved.cost == current.cost) {
+            co::State improved = co::modifiers::improve_worst(g, current);
+            if (improved.ordering == current.ordering) {
                 break;
             }
+
             current = improved;
         }
 

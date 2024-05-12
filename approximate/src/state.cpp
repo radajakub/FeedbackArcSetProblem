@@ -29,6 +29,14 @@ void co::State::set_vertices(std::vector<int> &vertices) {
     }
 }
 
+std::string co::State::hash() {
+    std::string hash = "";
+    for (int v : this->ordering) {
+        hash += std::to_string(v);
+    }
+    return hash;
+}
+
 void co::State::evaluate_full(co::DGraph &g) {
     this->cost = 0;
     // sum over all edges if the source is after the target in the ordering

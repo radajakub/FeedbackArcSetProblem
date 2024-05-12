@@ -2,6 +2,7 @@
 #define __HILL_CLIMBER_H__
 
 #include <limits>
+#include <unordered_set>
 
 #include "builders.h"
 #include "graph.h"

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <numeric>
 #include <random>
+#include <string>
 #include <vector>
 
 #include "graph.h"
@@ -35,6 +36,8 @@ namespace co {
         std::vector<int> to_vertices();
         // save the vertex permutation as ordering for faster computation
         void set_vertices(std::vector<int> &vertices);
+
+        std::string hash();
 
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);

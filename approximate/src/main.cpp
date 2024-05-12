@@ -18,9 +18,9 @@ int main(int argc, char *argv[]) {
     std::string time_limit = argv[3];
 
     // start timer
-    co::Timer timer(std::stoi(time_limit), 100);
+    co::Timer timer(std::stoi(time_limit), 200);
 
-    co::Sampler sampler(42);
+    co::Sampler sampler;
 
     co::InputGraph input_graph(input_path);
 
@@ -44,9 +44,10 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<co::State> big_solutions;
+
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
-    for (co::DGraph &g : big_subgraphs) {
-        co::State s = co::hill_climber(g, timer, sampler);
+    for (int i = 0; i < big_subgraphs.size(); ++i) {
+        co::State s = co::hill_climber(big_subgraphs[i], timer, sampler);
         big_solutions.push_back(s);
     }
 
