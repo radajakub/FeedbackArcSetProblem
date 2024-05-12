@@ -5,7 +5,7 @@
 #include "hill_climber.h"
 #include "utils.h"
 
-int EXACT_THRESHOLD = 8;
+int EXACT_THRESHOLD = 5;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
     for (int i = 0; i < big_subgraphs.size(); ++i) {
+        // todo: fix timers (it works now because there is always only one graph to solve approximately)
         co::State s = co::hill_climber(big_subgraphs[i], timer, sampler);
         big_solutions.push_back(s);
     }
