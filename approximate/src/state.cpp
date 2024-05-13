@@ -41,14 +41,14 @@ void co::State::place_vertex(int v, int pos, DGraph &g) {
 
     // increase cost by all outgoing edges to the left of the placed vertex
     for (co::Vertex &u : g.out_edges[v]) {
-        if (this->ordering[u.vertex] != -1 && this->ordering[v] > this->ordering[u.vertex]) {
+        if (this->ordering[u.vertex] != -1 && pos > this->ordering[u.vertex]) {
             this->cost += u.cost;
         }
     }
 
     // increase cost by all incoming edges from the right of the placed vertex
     for (co::Vertex &u : g.in_edges[v]) {
-        if (this->ordering[u.vertex] != -1 && this->ordering[v] < this->ordering[u.vertex]) {
+        if (this->ordering[u.vertex] != -1 && pos < this->ordering[u.vertex]) {
             this->cost += u.cost;
         }
     }

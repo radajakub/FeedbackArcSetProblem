@@ -16,10 +16,7 @@ co::State co::branch_and_bound(co::DGraph &g) {
     std::stack<co::IncrementalState> stack;
     stack.push(best_state);
 
-    int iter = 0;
     while (!stack.empty()) {
-        ++iter;
-
         // pop current state
         co::IncrementalState current = stack.top();
         stack.pop();
@@ -49,8 +46,6 @@ co::State co::branch_and_bound(co::DGraph &g) {
             stack.push(next);
         }
     }
-
-    std::cout << iter << std::endl;
 
     return best_state.to_state();
 }
