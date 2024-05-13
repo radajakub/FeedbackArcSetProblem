@@ -1,6 +1,7 @@
 #ifndef __GRAPH_H__
 #define __GRAPH_H__
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <stack>

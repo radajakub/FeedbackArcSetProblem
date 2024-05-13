@@ -5,6 +5,7 @@
 #include <fstream>
 #include <numeric>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -31,23 +32,20 @@ namespace co {
         // construct empty solution
         State(int V);
 
-        // set order of a vertex
-        void set_order(int vertex, int order);
-        void set_order(std::vector<std::pair<int, int>> &indexed_vector);
+        // remove vertex and adjust cost
+        void remove_vertex(int v, DGraph &g);
 
-        // get the vertex permutation instead of the order
-        std::vector<int> to_vertices();
-        // save the vertex permutation as ordering for faster computation
-        void set_vertices(std::vector<int> &vertices);
+        // place vertex at position and adjust cost
+        void place_vertex(int v, int pos, DGraph &g);
+
+        // just set the order of the vertex
+        void set_order(int v, int pos);
+        void set_order(std::vector<std::pair<int, int>> &indexed_vector);
 
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
-        // adjusts the costs only for the vertices in changed
-        void evaluate_incremental(DGraph &g, co::State &original, std::vector<int> &changed);
 
-        void print_val();
-        void print_ordering();
-        void print_vertices();
+        void print(std::string prefix);
 
         void save_solution(DGraph &g, std::ofstream &f);
     };

@@ -7,8 +7,8 @@
 #include "save.h"
 #include "utils.h"
 
-int EXACT_THRESHOLD = 5;
-int SAFETY_MARGIN_MS = 100;
+const int EXACT_THRESHOLD = 0;
+const int SAFETY_MARGIN_MS = 100;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
