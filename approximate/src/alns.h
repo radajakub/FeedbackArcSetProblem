@@ -76,6 +76,20 @@ namespace co {
             void update(int action, int reward) override;
         };
 
+        class UCB : public Selector {
+        private:
+            double alpha;
+            std::vector<double> mu;
+            std::vector<int> n;
+            std::vector<double> ucb;
+
+        public:
+            UCB(int actions, double alpha, std::mt19937 &rng) : Selector(actions, rng), alpha(alpha), mu(actions, 0), n(actions, 0), ucb(actions, std::numeric_limits<double>::max()){};
+
+            int select() override;
+            void update(int action, int reward) override;
+        };
+
     };
 
     class ALNS {

@@ -1,5 +1,7 @@
 #include "alns.h"
 
+/// ########## DESTROY OPERATORS ##########
+
 co::op_change co::destroy::random(DGraph &g, State &s, std::mt19937 &rng) {
     std::uniform_int_distribution<int> v_dist(0, g.V - 1);
     int v = v_dist(rng);
@@ -156,6 +158,8 @@ co::op_change co::destroy::more_incoming(DGraph &g, State &s, std::mt19937 &rng)
     return destroyed;
 }
 
+/// ########## REPAIR OPERATORS ##########
+
 void co::repair::random(DGraph &g, State &s, co::op_change destroyed, std::mt19937 &rng) {
     std::uniform_int_distribution<int> v_dist(0, g.V - 1);
 
@@ -197,6 +201,8 @@ void co::repair::greedy(DGraph &g, State &s, co::op_change destroyed, std::mt199
     }
 }
 
+/// ########## SELECTORS ##########
+
 int co::select::Random::select() {
     return a_dist(rng);
 }
@@ -219,6 +225,20 @@ void co::select::EpsGreedy::update(int action, int reward) {
     // incremental update of the mean
     this->mu_r[action] = (this->mu_r[action] * (this->t - 1) + reward) / this->t;
 }
+
+int co::select::UCB::select() {
+    // select the action with the highest UCB value
+    return std::distance(ucb.begin(), std::max_element(ucb.begin(), ucb.end()));
+}
+
+void co::select::UCB::update(int action, int reward) {
+    ++this->t;
+    ++this->n[action];
+    this->mu[action] = (this->mu[action] * (this->t - 1) + reward) / this->t;
+    this->ucb[action] = this->mu[action] + std::sqrt((this->alpha * std::log(this->t)) / (2 * this->n[action]));
+}
+
+/// ########## ALNS ##########
 
 co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     if (seed == -1) {
@@ -248,7 +268,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     };
 
     // intitilize bandit which will select the operation pair
-    this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
+    this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2, this->rng));
+    // this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::Random(this->operators.size(), this->rng));
 
     this->iter = 0;
