@@ -30,6 +30,7 @@ namespace co {
     namespace repair {
         void random(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
         void greedy(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
+        void ordered_random(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
     };
 
 };

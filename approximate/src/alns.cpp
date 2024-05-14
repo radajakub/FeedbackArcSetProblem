@@ -29,6 +29,25 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
     };
 
+    this->builders = {
+        co::build::in_cost,
+        co::build::out_cost,
+        co::build::in_degree,
+        co::build::out_degree,
+        co::build::bidirect,
+        co::build::bidirect_max,
+        co::build::bidirect_min,
+        co::build::bidirect_abs,
+        co::build::bidirect_ratio,
+    };
+
+    this->restart_builders = {
+        co::build::random,
+        co::build::bidirect_shuffle,
+    };
+
+    this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);
+
     // intitilize bandit which will select the operation pair
     this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
@@ -39,7 +58,7 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
 }
 
 co::State co::ALNS::solve(co::DGraph &g) {
-    co::State best = co::builders::out_cost(g);
+    co::State best = this->choose_builder()(g, this->rng);
     best.evaluate_full(g);
 
     co::State current = best;
@@ -63,7 +82,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
         // repair the state
         repair(g, s, destroyed, this->rng);
 
-        // // todo: remove before submission
+        // todo: remove before submission
         // int val = s.cost;
         // s.evaluate_full(g);
         // if (val != s.cost) {
@@ -75,7 +94,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
         if (s.cost < best.cost) {
             best = s;
             // todo: remove before submission
-            std::cout << "New best solution found: " << best.cost << std::endl;
+            std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
         }
 
         // update the bandit values
@@ -86,7 +105,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
             ++no_change_iters;
             if (no_change_iters > RESTART_ITERS) {
                 no_change_iters = 0;
-                s = co::builders::random(g, this->rng);
+                s = this->choose_builder()(g, this->rng);
                 s.evaluate_full(g);
             }
         } else {
@@ -96,7 +115,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
         // accept the state
         // todo: something better than greedy
         double p = this->p_dist(this->rng);
-        if (s.cost < current.cost && p < 0.9) {
+        if (s.cost < current.cost) {
             current = s;
         }
 
@@ -106,11 +125,19 @@ co::State co::ALNS::solve(co::DGraph &g) {
     return best;
 }
 
+co::builder co::ALNS::choose_builder() {
+    if (this->next_builder < this->builders.size()) {
+        return this->builders[this->next_builder++];
+    }
+    return this->restart_builders[this->builder_dist(this->rng)];
+}
+
 void co::ALNS::iter_start() {
     this->iter_start_time = std::chrono::steady_clock::now();
 }
 
 void co::ALNS::iter_stop() {
+    ++this->iter;
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     this->prev_iter = std::chrono::duration_cast<std::chrono::milliseconds>(end - this->iter_start_time);
 }

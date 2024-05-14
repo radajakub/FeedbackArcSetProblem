@@ -9,9 +9,9 @@
 #include <random>
 #include <utility>
 
+#include "alns_builders.h"
 #include "alns_operators.h"
 #include "alns_selectors.h"
-#include "builders.h"
 #include "graph.h"
 #include "state.h"
 
@@ -27,9 +27,14 @@ namespace co {
 
         std::vector<op> operators;
 
+        int next_builder;
+        std::uniform_int_distribution<int> builder_dist;
+        std::vector<builder> builders;
+        std::vector<builder> restart_builders;
+
         std::unique_ptr<co::select::Selector> selector;
 
-        int iter;
+        long int iter;
         std::chrono::milliseconds prev_iter;
         std::chrono::steady_clock::time_point iter_start_time;
 
@@ -37,6 +42,8 @@ namespace co {
         ALNS(int seed, std::chrono::steady_clock::time_point deadline);
 
         State solve(DGraph &g);
+
+        builder choose_builder();
 
         void iter_start();
         void iter_stop();

@@ -9,6 +9,7 @@
 
 const int EXACT_THRESHOLD = 10;
 const int SAFETY_MARGIN_MS = 200;
+const int SEED = 2;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
     for (int i = 0; i < big_subgraphs.size(); ++i) {
         // todo: fix timers (it works now because there is always only one graph to solve approximately)
-        co::ALNS alns(-1, deadline);
+        co::ALNS alns(SEED, deadline);
         co::State s = alns.solve(big_subgraphs[i]);
         big_solutions.push_back(s);
     }
