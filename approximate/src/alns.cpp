@@ -1,7 +1,5 @@
 #include "alns.h"
 
-/// ########## ALNS ##########
-
 co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     if (seed == -1) {
         std::random_device rd;
@@ -21,8 +19,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
@@ -30,6 +28,7 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     };
 
     this->builders = {
+        co::build::bidirect_ratio,
         co::build::in_cost,
         co::build::out_cost,
         co::build::in_degree,
@@ -38,7 +37,6 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         co::build::bidirect_max,
         co::build::bidirect_min,
         co::build::bidirect_abs,
-        co::build::bidirect_ratio,
     };
 
     this->restart_builders = {
@@ -101,22 +99,23 @@ co::State co::ALNS::solve(co::DGraph &g) {
         int reward = current.cost - s.cost;
         this->selector->update(op_idx, reward);
 
+        // accept the state
+        // todo: something better than greedy
+        if (s.cost < current.cost) {
+            current = s;
+        }
+
+        // restart if no improvement occured for a long time
         if (reward == 0) {
             ++no_change_iters;
             if (no_change_iters > RESTART_ITERS) {
                 no_change_iters = 0;
-                s = this->choose_builder()(g, this->rng);
-                s.evaluate_full(g);
+                current = this->choose_builder()(g, this->rng);
+                current = co::build::random(g, this->rng);
+                current.evaluate_full(g);
             }
         } else {
             no_change_iters = 0;
-        }
-
-        // accept the state
-        // todo: something better than greedy
-        double p = this->p_dist(this->rng);
-        if (s.cost < current.cost) {
-            current = s;
         }
 
         this->iter_stop();

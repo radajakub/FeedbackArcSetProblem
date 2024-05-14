@@ -10,12 +10,14 @@
 #include <utility>
 
 #include "alns_builders.h"
+#include "alns_local_search.h"
 #include "alns_operators.h"
 #include "alns_selectors.h"
+#include "alns_shake.h"
 #include "graph.h"
 #include "state.h"
 
-const int RESTART_ITERS = 100;
+const int RESTART_ITERS = 1000;
 
 namespace co {
 

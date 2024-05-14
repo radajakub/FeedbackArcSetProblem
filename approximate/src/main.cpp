@@ -9,7 +9,7 @@
 
 const int EXACT_THRESHOLD = 10;
 const int SAFETY_MARGIN_MS = 200;
-const int SEED = 2;
+const int SEED = -1;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
