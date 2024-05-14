@@ -1,40 +1,83 @@
 #include "alns_local_search.h"
 
-void co::ls::best_swap(co::State &s, co::DGraph &g, std::mt19937 &rng) {
-    // std::cout << "best swap" << std::endl;
-    // create random order
+co::State co::ls::swap_neighbors(State &s, DGraph &g, std::mt19937 &rng) {
+    co::State new_s = s;
 
-    std::uniform_int_distribution<int> dist(0, g.V - 1);
-    int v = dist(rng);
+    std::vector<int> vertices(g.V);
+    for (int i = 0; i < g.V; ++i) {
+        vertices[new_s.ordering[i]] = i;
+    }
 
-    // find best swap
-    int best_cost = s.cost;
-    int best_swap = s.ordering[v];
+    for (int j = 0; j < g.V - 1; ++j) {
+        // vertex and right neighbor
+        int u = vertices[j];
+        int v = vertices[j + 1];
 
-    for (int u = 0; u < g.V; ++u) {
-        if (u == v) continue;
+        // compute the costs between these two
+        int uv = g.cost_matrix[u][v];
+        int vu = g.cost_matrix[v][u];
 
-        co::State s_copy = s;
-        int v_pos = s_copy.ordering[v];
-        int u_pos = s_copy.ordering[u];
+        bool swap = false;
+        // there is only backward edge
+        if (uv == -1 && vu != -1) {
+            swap = true;
+        } else if (uv != -1 && vu != -1) {
+            if (vu > uv) {
+                swap = true;
+            }
+        }
 
-        s_copy.remove_vertex(v, g);
-        s_copy.remove_vertex(u, g);
-        s_copy.place_vertex(v, u_pos, g);
-        s_copy.place_vertex(u, v_pos, g);
-        if (s_copy.cost < best_cost) {
-            best_cost = s_copy.cost;
-            best_swap = u;
+        if (swap) {
+            int u_pos = new_s.ordering[u];
+            int v_pos = new_s.ordering[v];
+
+            new_s.remove_vertex(u, g);
+            new_s.remove_vertex(v, g);
+            new_s.place_vertex(v, u_pos, g);
+            new_s.place_vertex(u, v_pos, g);
+
+            for (int i = 0; i < g.V; ++i) {
+                vertices[new_s.ordering[i]] = i;
+            }
         }
     }
 
-    if (best_swap != s.ordering[v]) {
-        int v_pos = s.ordering[v];
-        int u_pos = s.ordering[best_swap];
+    return new_s;
+}
 
-        s.remove_vertex(v, g);
-        s.remove_vertex(best_swap, g);
-        s.place_vertex(v, u_pos, g);
-        s.place_vertex(best_swap, v_pos, g);
+co::State co::ls::shift_range(State &s, DGraph &g, std::mt19937 &rng) {
+    co::State new_s = s;
+
+    std::vector<int> vertices(g.V);
+    for (int i = 0; i < g.V; ++i) {
+        vertices[new_s.ordering[i]] = i;
     }
+
+    int start = std::uniform_int_distribution<int>(0, g.V - 3)(rng);
+    int end = std::uniform_int_distribution<int>(start + 1, g.V - 1)(rng);
+
+    std::vector<int> range(vertices.begin() + start, vertices.begin() + end);
+    vertices.erase(vertices.begin() + start, vertices.begin() + end);
+
+    int best_cost = std::numeric_limits<int>::max();
+    co::State best_s = s;
+
+    for (int i = 0; i < vertices.size(); ++i) {
+        std::vector<int> new_vertices = vertices;
+        new_vertices.insert(new_vertices.begin() + i, range.begin(), range.end());
+
+        // convert vertex positions to ordering
+        co::State new_s(g.V);
+        for (int i = 0; i < g.V; ++i) {
+            new_s.ordering[new_vertices[i]] = i;
+        }
+        new_s.evaluate_full(g);
+
+        if (new_s.cost < best_cost) {
+            best_cost = new_s.cost;
+            best_s = new_s;
+        }
+    }
+
+    return best_s;
 }

@@ -19,8 +19,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
@@ -47,9 +47,13 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);
 
     // intitilize bandit which will select the operation pair
-    this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2, this->rng));
+    // this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
-    // this->selector = std::unique_ptr<co::select::Selector>(new co::select::Random(this->operators.size(), this->rng));
+    this->selector = std::unique_ptr<co::select::Selector>(new co::select::Random(this->operators.size(), this->rng));
+
+    // this->acceptor = std::unique_ptr<co::accept::Acceptor>(new co::accept::HillClimbing());
+    // this->acceptor = std::unique_ptr<co::accept::Acceptor>(new co::accept::MovingAverage(100, 0.5));
+    this->acceptor = std::unique_ptr<co::accept::Acceptor>(new co::accept::SimulatedAnnealing(100, 0.1, 0.99, this->rng));
 
     this->iter = 0;
     this->prev_iter = std::chrono::milliseconds(0);
@@ -58,6 +62,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
 co::State co::ALNS::solve(co::DGraph &g) {
     co::State best = this->choose_builder()(g, this->rng);
     best.evaluate_full(g);
+    // best = co::ls::swap_neighbors(best, g, this->rng);
+    best = co::ls::shift_range(best, g, this->rng);
 
     co::State current = best;
     co::State s = best;
@@ -100,8 +106,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
         this->selector->update(op_idx, reward);
 
         // accept the state
-        // todo: something better than greedy
-        if (s.cost < current.cost) {
+        if (this->acceptor->accept(current.cost, s.cost)) {
             current = s;
         }
 
@@ -110,7 +115,6 @@ co::State co::ALNS::solve(co::DGraph &g) {
             ++no_change_iters;
             if (no_change_iters > RESTART_ITERS) {
                 no_change_iters = 0;
-                current = this->choose_builder()(g, this->rng);
                 current = co::build::random(g, this->rng);
                 current.evaluate_full(g);
             }

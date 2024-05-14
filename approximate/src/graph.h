@@ -38,6 +38,7 @@ namespace co {
 
         std::vector<int> vertex_map;
         std::vector<Edge> edges;
+        std::vector<std::vector<int>> cost_matrix;
 
         // list of out and in edges for each vertex
         std::vector<std::vector<Vertex>> out_edges;

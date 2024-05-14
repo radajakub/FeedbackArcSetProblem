@@ -21,6 +21,7 @@ namespace co {
     namespace destroy {
         op_change random(DGraph &g, State &s, std::mt19937 &rng);
         op_change random_multiple(DGraph &g, State &s, std::mt19937 &rng);
+        // random range
         op_change most_costly(DGraph &g, State &s, std::mt19937 &rng);
         op_change most_costly_multiple(DGraph &g, State &s, std::mt19937 &rng);
         op_change high_degree(DGraph &g, State &s, std::mt19937 &rng);

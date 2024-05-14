@@ -28,10 +28,14 @@ co::DGraph::DGraph(int V, std::vector<Edge> &edges, std::vector<int> &vertex_map
     this->in_degrees.resize(this->V, 0);
     this->in_costs.resize(this->V, 0);
 
+    this->cost_matrix.resize(this->V, std::vector<int>(this->V, -1));
+
     // compute adjacency lists and in/out degrees
     for (co::Edge &e : this->edges) {
         this->out_edges[e.source].push_back(co::Vertex(e.target, e.cost));
         this->in_edges[e.target].push_back(co::Vertex(e.source, e.cost));
+
+        this->cost_matrix[e.source][e.target] = e.cost;
 
         ++(this->out_degrees[e.source]);
         ++(this->in_degrees[e.target]);

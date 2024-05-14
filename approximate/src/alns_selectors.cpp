@@ -13,7 +13,17 @@ int co::select::EpsGreedy::select() {
     if (p < this->eps) {
         return a_dist(rng);
     } else {
-        return std::distance(mu_r.begin(), std::max_element(mu_r.begin(), mu_r.end()));
+        int argmax = -1;
+        int max = std::numeric_limits<int>::min();
+
+        for (int i = 0; i < this->mu_r.size(); ++i) {
+            if (this->mu_r[i] > max) {
+                argmax = i;
+                max = this->mu_r[i];
+            }
+        }
+        return argmax;
+        // return std::distance(mu_r.begin(), std::max_element(mu_r.begin(), mu_r.end()));
     }
 }
 
@@ -25,7 +35,17 @@ void co::select::EpsGreedy::update(int action, int reward) {
 
 int co::select::UCB::select() {
     // select the action with the highest UCB value
-    return std::distance(ucb.begin(), std::max_element(ucb.begin(), ucb.end()));
+    int argmax = -1;
+    int max = std::numeric_limits<int>::min();
+
+    for (int i = 0; i < this->ucb.size(); ++i) {
+        if (this->ucb[i] > max) {
+            argmax = i;
+            max = this->ucb[i];
+        }
+    }
+    return argmax;
+    // return std::distance(ucb.begin(), std::max_element(ucb.begin(), ucb.end()));
 }
 
 void co::select::UCB::update(int action, int reward) {

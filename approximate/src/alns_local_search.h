@@ -13,8 +13,11 @@
 
 namespace co {
     namespace ls {
-        // go through all vertices in random order and find the best swap with all others
-        void best_swap(State &s, DGraph &g, std::mt19937 &rng);
+        // DOES NOT WORK
+        co::State swap_neighbors(State &s, DGraph &g, std::mt19937 &rng);
+
+        // DOES NOT WORK
+        co::State shift_range(State &s, DGraph &g, std::mt19937 &rng);
     };
 };
 

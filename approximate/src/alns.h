@@ -9,11 +9,11 @@
 #include <random>
 #include <utility>
 
+#include "alns_acceptors.h"
 #include "alns_builders.h"
 #include "alns_local_search.h"
 #include "alns_operators.h"
 #include "alns_selectors.h"
-#include "alns_shake.h"
 #include "graph.h"
 #include "state.h"
 
@@ -35,6 +35,7 @@ namespace co {
         std::vector<builder> restart_builders;
 
         std::unique_ptr<co::select::Selector> selector;
+        std::unique_ptr<co::accept::Acceptor> acceptor;
 
         long int iter;
         std::chrono::milliseconds prev_iter;
