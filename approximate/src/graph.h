@@ -58,6 +58,8 @@ namespace co {
         std::vector<std::pair<int, int>> out_degree_vertices();
         std::vector<std::pair<int, int>> in_degree_vertices();
 
+        DGraph subgraph(std::vector<int> &vertices);
+
         void print();
     };
 

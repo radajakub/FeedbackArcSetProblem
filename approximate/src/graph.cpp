@@ -93,6 +93,27 @@ std::vector<std::pair<int, int>> co::DGraph::in_degree_vertices() {
     return indexed_list;
 }
 
+co::DGraph co::DGraph::subgraph(std::vector<int> &vertices) {
+    std::vector<co::Edge> subedges;
+    std::vector<int> vertex_map(vertices.size());
+    std::vector<int> inverse_vertex_map(this->V);
+    std::vector<bool> is_subvertex(this->V, false);
+
+    for (int i = 0; i < vertices.size(); ++i) {
+        is_subvertex[vertices[i]] = true;
+        vertex_map[i] = vertices[i];
+        inverse_vertex_map[vertices[i]] = i;
+    }
+
+    for (co::Edge &e : this->edges) {
+        if (is_subvertex[e.source] && is_subvertex[e.target]) {
+            subedges.push_back(co::Edge(inverse_vertex_map[e.source], inverse_vertex_map[e.target], e.cost));
+        }
+    }
+
+    return co::DGraph(vertices.size(), subedges, vertex_map);
+}
+
 void co::DGraph::print() {
     std::cout << "Graph" << std::endl;
     std::cout << " - |E| = " << this->E << std::endl;
