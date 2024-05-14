@@ -28,6 +28,75 @@ co::op_change co::destroy::random_multiple(DGraph &g, State &s, std::mt19937 &rn
     return destroyed;
 }
 
+co::op_change co::destroy::random_range(DGraph &g, State &s, std::mt19937 &rng) {
+    int size = (int)(MAX_DESTROY_RATIO * g.V);
+    std::uniform_int_distribution<int> start_dist(0, g.V - size - 1);
+    std::uniform_int_distribution<int> k_dist(2, size);
+
+    int start = start_dist(rng);
+    int k = k_dist(rng);
+
+    std::vector<int> vertices = s.to_vertices();
+
+    std::vector<int> destroyed(vertices.begin() + start, vertices.begin() + start + k);
+    for (int d : destroyed) {
+        s.remove_vertex(d, g);
+    }
+
+    return destroyed;
+}
+
+co::op_change co::destroy::backward_adjacent(DGraph &g, State &s, std::mt19937 &rng) {
+    // sample random vertex
+    std::uniform_int_distribution<int> v_dist(0, g.V - 1);
+    int v = v_dist(rng);
+
+    std::vector<int> destroyed;
+
+    // find all edges that go backwards and find the vertices
+    for (co::Vertex &u : g.out_edges[v]) {
+        if (s.ordering[v] > s.ordering[u.vertex]) {
+            destroyed.push_back(u.vertex);
+        }
+    }
+
+    for (co::Vertex &u : g.in_edges[v]) {
+        if (s.ordering[v] < s.ordering[u.vertex]) {
+            destroyed.push_back(u.vertex);
+        }
+    }
+
+    for (int d : destroyed) {
+        s.remove_vertex(d, g);
+    }
+
+    return destroyed;
+}
+
+co::op_change co::destroy::adjacent(DGraph &g, State &s, std::mt19937 &rng) {
+    // sample random vertex
+    std::uniform_int_distribution<int> v_dist(0, g.V - 1);
+    int v = v_dist(rng);
+
+    std::vector<int> destroyed;
+    destroyed.reserve(g.out_edges[v].size() + g.in_edges[v].size());
+
+    // find all edges that go backwards and find the vertices
+    for (co::Vertex &u : g.out_edges[v]) {
+        destroyed.push_back(u.vertex);
+    }
+
+    for (co::Vertex &u : g.in_edges[v]) {
+        destroyed.push_back(u.vertex);
+    }
+
+    for (int d : destroyed) {
+        s.remove_vertex(d, g);
+    }
+
+    return destroyed;
+}
+
 co::op_change co::destroy::most_costly(DGraph &g, State &s, std::mt19937 &rng) {
     int max_cost = -1;
     int max_vertex = -1;
@@ -81,6 +150,53 @@ co::op_change co::destroy::most_costly_multiple(DGraph &g, State &s, std::mt1993
     for (int i = 0; i < k; ++i) {
         destroyed[i] = indexed_costs[i].second;
         s.remove_vertex(indexed_costs[i].second, g);
+    }
+
+    return destroyed;
+}
+
+co::op_change co::destroy::most_costly_adjacent(DGraph &g, State &s, std::mt19937 &rng) {
+    int max_cost = -1;
+    int max_vertex = -1;
+
+    for (int v = 0; v < g.V; ++v) {
+        int cost = 0;
+
+        for (co::Vertex &u : g.out_edges[v]) {
+            if (s.ordering[u.vertex] != -1 && s.ordering[v] > s.ordering[u.vertex]) {
+                cost += u.cost;
+            }
+        }
+
+        for (co::Vertex &u : g.in_edges[v]) {
+            if (s.ordering[u.vertex] != -1 && s.ordering[v] < s.ordering[u.vertex]) {
+                cost += u.cost;
+            }
+        }
+
+        if (cost > max_cost) {
+            max_cost = cost;
+            max_vertex = v;
+        }
+    }
+
+    std::vector<int> destroyed;
+
+    // find all edges that go backwards and find the vertices
+    for (co::Vertex &u : g.out_edges[max_vertex]) {
+        if (s.ordering[max_vertex] > s.ordering[u.vertex]) {
+            destroyed.push_back(u.vertex);
+        }
+    }
+
+    for (co::Vertex &u : g.in_edges[max_vertex]) {
+        if (s.ordering[max_vertex] < s.ordering[u.vertex]) {
+            destroyed.push_back(u.vertex);
+        }
+    }
+
+    for (int d : destroyed) {
+        s.remove_vertex(d, g);
     }
 
     return destroyed;

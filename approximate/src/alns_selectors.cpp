@@ -23,7 +23,6 @@ int co::select::EpsGreedy::select() {
             }
         }
         return argmax;
-        // return std::distance(mu_r.begin(), std::max_element(mu_r.begin(), mu_r.end()));
     }
 }
 
@@ -45,7 +44,6 @@ int co::select::UCB::select() {
         }
     }
     return argmax;
-    // return std::distance(ucb.begin(), std::max_element(ucb.begin(), ucb.end()));
 }
 
 void co::select::UCB::update(int action, int reward) {

@@ -38,6 +38,9 @@ namespace co {
         // place vertex at position and adjust cost
         void place_vertex(int v, int pos, DGraph &g);
 
+        std::vector<int> to_vertices();
+        void from_vertices(std::vector<int> &vertices);
+
         // just set the order of the vertex
         void set_order(int v, int pos);
         void set_order(std::vector<std::pair<int, int>> &indexed_vector);

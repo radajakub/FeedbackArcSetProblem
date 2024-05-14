@@ -19,11 +19,18 @@ namespace co {
     typedef std::pair<destroy_op, repair_op> op;
 
     namespace destroy {
+        // remove a random vertex
         op_change random(DGraph &g, State &s, std::mt19937 &rng);
+        // remove MAX_DESTROY_RATIO of vertices
         op_change random_multiple(DGraph &g, State &s, std::mt19937 &rng);
-        // random range
+        // remove MAX_DESTROY_RATIO of consecutive vertices
+        op_change random_range(DGraph &g, State &s, std::mt19937 &rng);
+        // remove a random vertex and all backward adjacent vertices
+        op_change backward_adjacent(DGraph &g, State &s, std::mt19937 &rng);
+        op_change adjacent(DGraph &g, State &s, std::mt19937 &rng);
         op_change most_costly(DGraph &g, State &s, std::mt19937 &rng);
         op_change most_costly_multiple(DGraph &g, State &s, std::mt19937 &rng);
+        op_change most_costly_adjacent(DGraph &g, State &s, std::mt19937 &rng);
         op_change high_degree(DGraph &g, State &s, std::mt19937 &rng);
         op_change mostly_backwards(DGraph &g, State &s, std::mt19937 &rng);
         op_change more_incoming(DGraph &g, State &s, std::mt19937 &rng);

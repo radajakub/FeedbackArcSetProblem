@@ -1,6 +1,7 @@
 #ifndef __ALNS_SELECTORS_H__
 #define __ALNS_SELECTORS_H__
 
+#include <iostream>
 #include <random>
 #include <vector>
 

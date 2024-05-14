@@ -15,16 +15,24 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
     };
 
     this->builders = {
@@ -95,32 +103,35 @@ co::State co::ALNS::solve(co::DGraph &g) {
         // }
 
         // check if best solution was found
+        int reward = 0;
         if (s.cost < best.cost) {
+            reward = std::max(10, reward);
             best = s;
             // todo: remove before submission
             std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
+        } else if (s.cost < current.cost) {
+            reward = std::max(5, reward);
         }
-
-        // update the bandit values
-        int reward = current.cost - s.cost;
-        this->selector->update(op_idx, reward);
 
         // accept the state
         if (this->acceptor->accept(current.cost, s.cost)) {
+            reward = std::max(2, reward);
             current = s;
-        }
-
-        // restart if no improvement occured for a long time
-        if (reward == 0) {
+            no_change_iters = 0;
+        } else {
+            // restart if no improvement was done in a long time
             ++no_change_iters;
             if (no_change_iters > RESTART_ITERS) {
                 no_change_iters = 0;
-                current = co::build::random(g, this->rng);
+                current = this->choose_builder()(g, this->rng);
                 current.evaluate_full(g);
+                current = co::ls::shift_range(current, g, this->rng);
             }
-        } else {
-            no_change_iters = 0;
         }
+
+        // update the bandit values
+        // int reward = current.cost - s.cost;
+        this->selector->update(op_idx, reward);
 
         this->iter_stop();
     }

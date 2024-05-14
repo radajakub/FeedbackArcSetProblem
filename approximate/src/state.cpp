@@ -54,6 +54,20 @@ void co::State::place_vertex(int v, int pos, DGraph &g) {
     }
 }
 
+std::vector<int> co::State::to_vertices() {
+    std::vector<int> vertices(this->V);
+    for (int i = 0; i < this->V; ++i) {
+        vertices[this->ordering[i]] = i;
+    }
+    return vertices;
+}
+
+void co::State::from_vertices(std::vector<int> &vertices) {
+    for (int i = 0; i < this->V; ++i) {
+        this->ordering[vertices[i]] = i;
+    }
+}
+
 void co::State::set_order(int v, int pos) {
     this->ordering[v] = pos;
 }
