@@ -5,8 +5,6 @@
 #include <vector>
 
 namespace co {
-    int argmax(std::vector<int> &vec);
-
     // wrap every item with an index as the second item of the tuple
     std::vector<std::pair<int, int>> enumerate(std::vector<int> &vector);
 };
