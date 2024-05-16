@@ -4,8 +4,10 @@ co::State::State(int V) {
     this->V = V;
     this->cost = std::numeric_limits<int>::max();
     this->positions.resize(V, -1);
+    this->max_position = 0;
 }
 
+// todo: paralellize this
 void co::State::remove_vertex(int v, DGraph &g) {
     if (this->positions[v] == -1) {
         std::cout << "cannot remove the same vertex twice!!" << std::endl;
@@ -35,6 +37,7 @@ void co::State::remove_vertex(int v, DGraph &g) {
         }
     }
     this->positions[v] = -1;
+    this->max_position -= 1;
 }
 
 void co::State::place_vertex(int v, int pos, DGraph &g) {
@@ -43,13 +46,7 @@ void co::State::place_vertex(int v, int pos, DGraph &g) {
         exit(1);
     }
 
-    // find maximum occupied position
-    int max_pos = -1;
-    for (int i = 0; i < this->V; ++i) {
-        max_pos = std::max(max_pos, this->positions[i]);
-    }
-
-    pos = std::min(pos, max_pos + 1);
+    pos = std::min(pos, this->max_position + 1);
 
     // increase positions of all nodes after the placed one
     for (int i = 0; i < this->V; ++i) {
@@ -58,6 +55,7 @@ void co::State::place_vertex(int v, int pos, DGraph &g) {
         }
     }
     this->positions[v] = pos;
+    this->max_position += 1;
 
     // increase cost by all outgoing edges to the left of the placed vertex
     for (co::Vertex &u : g.out_edges[v]) {
@@ -98,14 +96,15 @@ void co::State::set_order(std::vector<std::pair<int, int>> &indexed_vector) {
     }
 }
 
+// todo: paralellize this
 void co::State::evaluate_full(co::DGraph &g) {
+    this->max_position = g.V - 1;
     this->cost = 0;
     // sum over all edges if the source is after the target in the positions
     for (int u = 0; u < g.V; ++u) {
-        // allow evaluation of partial states
+        // do not allow evaluation of partial states
         if (this->positions[u] == -1) {
-            this->is_full = false;
-            continue;
+            exit(1);
         }
 
         for (co::Vertex &v : g.out_edges[u]) {

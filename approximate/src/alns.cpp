@@ -1,6 +1,6 @@
 #include "alns.h"
 
-co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
+co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) {
     if (seed == -1) {
         std::random_device rd;
         this->rng = std::mt19937(rd());
@@ -13,27 +13,30 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     this->operators = {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
     };
+
+    if (V > 5) {
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::random));
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::greedy));
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::random));
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_range, co::repair::greedy));
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::random));
+        this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_multiple, co::repair::greedy));
+    }
 
     this->builders = {
         co::build::bidirect_ratio,
@@ -55,7 +58,7 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
     this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);
 
     // intitilize bandit which will select the operation pair
-    this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2, this->rng));
+    this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2.0, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::Random(this->operators.size(), this->rng));
 
@@ -119,7 +122,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
             reward = std::max(10, reward);
             best = s;
             // todo: remove before submission
-            // std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
+            std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
         } else if (s.cost < current.cost) {
             reward = std::max(5, reward);
         }
@@ -135,8 +138,11 @@ co::State co::ALNS::solve(co::DGraph &g) {
             if (no_change_iters > RESTART_ITERS) {
                 no_change_iters = 0;
                 current = this->choose_builder()(g, this->rng);
+                // current = co::build::random(g, this->rng);
                 current.evaluate_full(g);
                 current = co::ls::shift_range(current, g, this->rng);
+                // this->acceptor->reset();
+                // this->selector->reset();
             }
         }
 

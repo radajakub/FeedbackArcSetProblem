@@ -8,16 +8,19 @@
 namespace co {
     namespace accept {
         class Acceptor {
+        public:
+            virtual bool accept(int current_cost, int new_cost) { return true; };
+            virtual void reset() {}
+        };
+
+        class HillClimbing : public Acceptor {
         private:
             int best_cost;
 
         public:
-            virtual bool accept(int current_cost, int new_cost) { return true; };
-        };
-
-        class HillClimbing : public Acceptor {
-        public:
+            HillClimbing() : Acceptor(){};
             bool accept(int current_cost, int new_cost) override;
+            void reset() override;
         };
 
         class MovingAverage : public Acceptor {
@@ -32,10 +35,14 @@ namespace co {
             MovingAverage(int gamma, double eta) : k(0), idx(0), gamma(gamma), history(gamma, 0), eta(eta){};
 
             bool accept(int current_cost, int new_cost) override;
+            void reset() override;
         };
 
         class SimulatedAnnealing : public Acceptor {
         private:
+            double T_init;
+            double Tend_init;
+
             double T;
             double Tend;
             double gamma;
@@ -43,9 +50,10 @@ namespace co {
             std::mt19937 &rng;
 
         public:
-            SimulatedAnnealing(double T, double Tend, double gamma, std::mt19937 &rng) : T(T), Tend(Tend), gamma(gamma), rng(rng), dist(0, 1){};
+            SimulatedAnnealing(double T, double Tend, double gamma, std::mt19937 &rng) : T(T), T_init(T), Tend_init(Tend), Tend(Tend), gamma(gamma), rng(rng), dist(0, 1){};
 
             bool accept(int current_cost, int new_cost) override;
+            void reset() override;
         };
     };
 };

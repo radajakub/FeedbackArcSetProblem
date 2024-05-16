@@ -42,7 +42,7 @@ namespace co {
         std::chrono::steady_clock::time_point iter_start_time;
 
     public:
-        ALNS(int seed, std::chrono::steady_clock::time_point deadline);
+        ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V);
 
         State solve(DGraph &g);
 

@@ -12,11 +12,6 @@ co::op_change co::destroy::random(DGraph &g, State &s, std::mt19937 &rng) {
 }
 
 co::op_change co::destroy::random_multiple(DGraph &g, State &s, std::mt19937 &rng) {
-    if (g.V < 4) {
-        std::cout << "Too small graph for multiple destroy" << std::endl;
-        exit(1);
-    }
-
     int k_min = 2;
     int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
 
@@ -36,10 +31,6 @@ co::op_change co::destroy::random_multiple(DGraph &g, State &s, std::mt19937 &rn
 }
 
 co::op_change co::destroy::random_range(DGraph &g, State &s, std::mt19937 &rng) {
-    if (g.V < 5) {
-        return {};
-    }
-
     int k_min = 2;
     int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
 
@@ -144,10 +135,6 @@ co::op_change co::destroy::most_costly(DGraph &g, State &s, std::mt19937 &rng) {
 }
 
 co::op_change co::destroy::most_costly_multiple(DGraph &g, State &s, std::mt19937 &rng) {
-    if (g.V < 4) {
-        return {};
-    }
-
     int k_min = 2;
     int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
 
