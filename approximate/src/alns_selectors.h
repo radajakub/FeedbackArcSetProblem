@@ -5,6 +5,8 @@
 #include <random>
 #include <vector>
 
+#include "utils.h"
+
 namespace co {
     namespace select {
 
@@ -20,6 +22,7 @@ namespace co {
         public:
             virtual int select() { return a_dist(rng); };
             virtual void update(int action, int reward) {};
+            virtual void reset() {};
         };
 
         class Random : public Selector {
@@ -28,6 +31,7 @@ namespace co {
 
             int select() override;
             void update(int action, int reward) override;
+            void reset() override;
         };
 
         class EpsGreedy : public Selector {
@@ -42,6 +46,7 @@ namespace co {
 
             int select() override;
             void update(int action, int reward) override;
+            void reset() override;
         };
 
         class UCB : public Selector {
@@ -56,6 +61,7 @@ namespace co {
 
             int select() override;
             void update(int action, int reward) override;
+            void reset() override;
         };
 
     };

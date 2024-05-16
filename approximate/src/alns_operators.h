@@ -25,6 +25,15 @@ namespace co {
         op_change random_multiple(DGraph &g, State &s, std::mt19937 &rng);
         // remove MAX_DESTROY_RATIO of consecutive vertices
         op_change random_range(DGraph &g, State &s, std::mt19937 &rng);
+
+        // todo: random chain of backwards vertices
+        // search by bfs for backwards vertices
+        // check if it is not the whole permutation or limit depth
+
+        // todo: segmented tournament selection
+
+        // todo: add check if the solution is correct
+
         // remove a random vertex and all backward adjacent vertices
         op_change backward_adjacent(DGraph &g, State &s, std::mt19937 &rng);
         op_change adjacent(DGraph &g, State &s, std::mt19937 &rng);

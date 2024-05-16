@@ -12,12 +12,17 @@ co::op_change co::destroy::random(DGraph &g, State &s, std::mt19937 &rng) {
 }
 
 co::op_change co::destroy::random_multiple(DGraph &g, State &s, std::mt19937 &rng) {
-    std::uniform_int_distribution<int> k_dist(2, (int)(MAX_DESTROY_RATIO * g.V));
+    if (g.V < 4) {
+        return {};
+    }
+
+    int k_min = 2;
+    int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
+
+    std::uniform_int_distribution<int> k_dist(k_min, k_max);
     int k = k_dist(rng);
 
-    std::vector<int> perm(g.V);
-    std::iota(perm.begin(), perm.end(), 0);
-    std::shuffle(perm.begin(), perm.end(), rng);
+    std::vector<int> perm = co::randperm(g.V, rng);
 
     std::vector<int> destroyed(k);
     for (int i = 0; i < k; ++i) {
@@ -29,12 +34,17 @@ co::op_change co::destroy::random_multiple(DGraph &g, State &s, std::mt19937 &rn
 }
 
 co::op_change co::destroy::random_range(DGraph &g, State &s, std::mt19937 &rng) {
-    int size = (int)(MAX_DESTROY_RATIO * g.V);
-    std::uniform_int_distribution<int> start_dist(0, g.V - size - 1);
-    std::uniform_int_distribution<int> k_dist(2, size);
+    if (g.V < 5) {
+        return {};
+    }
 
-    int start = start_dist(rng);
+    int k_min = 2;
+    int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
+
+    std::uniform_int_distribution<int> k_dist(k_min, k_max);
     int k = k_dist(rng);
+    std::uniform_int_distribution<int> start_dist(0, g.V - k - 1);
+    int start = start_dist(rng);
 
     std::vector<int> vertices = s.to_vertices();
 
@@ -91,7 +101,9 @@ co::op_change co::destroy::adjacent(DGraph &g, State &s, std::mt19937 &rng) {
     }
 
     for (int d : destroyed) {
-        s.remove_vertex(d, g);
+        if (s.ordering[d] != -1) {
+            s.remove_vertex(d, g);
+        }
     }
 
     return destroyed;
@@ -128,7 +140,14 @@ co::op_change co::destroy::most_costly(DGraph &g, State &s, std::mt19937 &rng) {
 }
 
 co::op_change co::destroy::most_costly_multiple(DGraph &g, State &s, std::mt19937 &rng) {
-    std::uniform_int_distribution<int> k_dist(2, (int)(MAX_DESTROY_RATIO * g.V));
+    if (g.V < 4) {
+        return {};
+    }
+
+    int k_min = 2;
+    int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
+
+    std::uniform_int_distribution<int> k_dist(k_min, k_max);
     int k = k_dist(rng);
 
     std::vector<int> costs(g.V, 0);
@@ -196,7 +215,10 @@ co::op_change co::destroy::most_costly_adjacent(DGraph &g, State &s, std::mt1993
     }
 
     for (int d : destroyed) {
-        s.remove_vertex(d, g);
+        // check in case the vertex was already removed
+        if (s.ordering[d] != -1) {
+            s.remove_vertex(d, g);
+        }
     }
 
     return destroyed;
@@ -277,6 +299,10 @@ co::op_change co::destroy::more_incoming(DGraph &g, State &s, std::mt19937 &rng)
 /// ########## REPAIR OPERATORS ##########
 
 void co::repair::random(DGraph &g, State &s, co::op_change destroyed, std::mt19937 &rng) {
+    if (destroyed.size() == 0) {
+        return;
+    }
+
     std::uniform_int_distribution<int> v_dist(0, g.V - 1);
 
     for (int v : destroyed) {
@@ -286,9 +312,12 @@ void co::repair::random(DGraph &g, State &s, co::op_change destroyed, std::mt199
 }
 
 void co::repair::greedy(DGraph &g, State &s, co::op_change destroyed, std::mt19937 &rng) {
+    if (destroyed.size() == 0) {
+        return;
+    }
+
     // shuffle the destroyed vertices to provide randomness
-    if (destroyed.size() > 1)
-        std::shuffle(destroyed.begin(), destroyed.end(), rng);
+    std::shuffle(destroyed.begin(), destroyed.end(), rng);
 
     // for every destroyed vertex find the best position
     for (int v : destroyed) {
@@ -327,9 +356,7 @@ void co::repair::random_ordered(DGraph &g, State &s, co::op_change destroyed, st
     std::uniform_int_distribution<int> v_dist(0, g.V - 1);
 
     // sample |D| numbers from 0 to V-1
-    std::vector<int> indices(g.V);
-    std::iota(indices.begin(), indices.end(), 0);
-    std::shuffle(indices.begin(), indices.end(), rng);
+    std::vector<int> indices = co::randperm(g.V, rng);
 
     std::vector<int> positions(destroyed.size());
     std::copy(indices.begin(), indices.begin() + destroyed.size(), positions.begin());

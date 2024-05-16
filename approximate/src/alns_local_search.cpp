@@ -46,6 +46,10 @@ co::State co::ls::swap_neighbors(State &s, DGraph &g, std::mt19937 &rng) {
 }
 
 co::State co::ls::shift_range(State &s, DGraph &g, std::mt19937 &rng) {
+    if (g.V < 5) {
+        return s;
+    }
+
     co::State new_s = s;
 
     std::vector<int> vertices(g.V);
