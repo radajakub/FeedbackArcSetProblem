@@ -45,3 +45,39 @@ void co::select::UCB::reset() {
     this->ucb = std::vector<double>(this->ucb.size(), 0);
     this->t = 0;
 }
+
+int co::select::SegmentedRouletteWheel::select() {
+    double p = this->p_dist(rng);
+    double cum_p = 0;
+    for (int i = 0; i < this->probabilities.size(); ++i) {
+        cum_p += this->probabilities[i];
+        if (p < cum_p) {
+            return i;
+        }
+    }
+    return this->probabilities.size() - 1;
+}
+
+void co::select::SegmentedRouletteWheel::update(int action, int reward) {
+    this->scores[action] = this->theta * this->scores[action] + (1 - this->theta) * reward;
+    this->segment += 1;
+
+    if (this->segment == this->segment_size) {
+        this->segment = 0;
+
+        double sum = 0;
+        for (int i = 0; i < this->scores.size(); ++i) {
+            sum += this->scores[i];
+        }
+
+        for (int i = 0; i < this->scores.size(); ++i) {
+            this->probabilities[i] = this->scores[i] / sum;
+        }
+    }
+}
+
+void co::select::SegmentedRouletteWheel::reset() {
+    this->scores = std::vector<double>(this->scores.size(), 0);
+    this->probabilities = std::vector<double>(this->probabilities.size(), static_cast<double>(1) / this->probabilities.size());
+    this->segment = 0;
+}

@@ -64,6 +64,23 @@ namespace co {
             void reset() override;
         };
 
+        class SegmentedRouletteWheel : public Selector {
+        private:
+            std::uniform_real_distribution<double> p_dist;
+            double theta;
+            double segment_size;
+            double segment;
+            std::vector<double> scores;
+            std::vector<double> probabilities;
+
+        public:
+            SegmentedRouletteWheel(int actions, double theta, int segment_size, std::mt19937 &rng) : Selector(actions, rng), theta(theta), segment_size(segment_size), segment(0), scores(actions, 1), probabilities(actions, static_cast<double>(1) / actions), p_dist(0, 1){};
+
+            int select() override;
+            void update(int action, int reward) override;
+            void reset() override;
+        };
+
     };
 };
 

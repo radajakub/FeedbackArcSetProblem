@@ -58,7 +58,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
     this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);
 
     // intitilize bandit which will select the operation pair
-    this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2.0, this->rng));
+    this->selector = std::unique_ptr<co::select::Selector>(new co::select::SegmentedRouletteWheel(this->operators.size(), 0.99, 10, this->rng));
+    // this->selector = std::unique_ptr<co::select::Selector>(new co::select::UCB(this->operators.size(), 2.0, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::EpsGreedy(this->operators.size(), 0.3, this->rng));
     // this->selector = std::unique_ptr<co::select::Selector>(new co::select::Random(this->operators.size(), this->rng));
 
