@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
     std::chrono::steady_clock::time_point sub_deadline = std::chrono::steady_clock::now() + time_per_graph;
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
     for (int i = 0; i < big_subgraphs.size(); ++i) {
-        std::cout << "solving " << i << std::endl;
         co::ALNS alns(SEED, sub_deadline);
         co::State s = alns.solve(big_subgraphs[i]);
         big_solutions.push_back(s);

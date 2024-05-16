@@ -40,3 +40,14 @@ int co::argmax(std::vector<int> &vector) {
 
     return idx;
 }
+
+void co::check_duplicates(std::vector<int> &vector) {
+    std::unordered_set<int> visited;
+    for (int i = 0; i < vector.size(); ++i) {
+        if (visited.find(vector[i]) != visited.end()) {
+            std::cout << "Duplicate element in vector" << std::endl;
+            exit(1);
+        }
+        visited.insert(vector[i]);
+    }
+}

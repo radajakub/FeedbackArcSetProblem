@@ -18,16 +18,16 @@ namespace co {
         // number of vertices
         int V;
 
-        // total cost of the current ordering
+        // total cost of the current positions
         int cost;
 
-        // bool indicating if every state has assigned ordering
+        // bool indicating if every state has assigned positions
         bool is_full;
 
-        // topological ordering of vertices
-        // ordering[v] = order for all v in V
+        // topological positions of vertices
+        // positions[v] = order for all v in V
         // i.e. permutation 0 3 1 2 is represented as 0 2 3 1
-        std::vector<int> ordering;
+        std::vector<int> positions;
 
         // construct empty solution
         State(int V);
@@ -48,6 +48,9 @@ namespace co {
         // full evaluation over the whole solution
         void evaluate_full(DGraph &g);
 
+        void check_validtity(DGraph &g);
+        void check_consistency(DGraph &g);
+
         void print(std::string prefix);
 
         void save_solution(DGraph &g, std::ofstream &f);
@@ -60,7 +63,7 @@ namespace co {
 
         int placed;
 
-        std::vector<int> ordering;
+        std::vector<int> positions;
 
         IncrementalState(int V);
 

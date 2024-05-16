@@ -5,7 +5,7 @@ co::State co::ls::swap_neighbors(State &s, DGraph &g, std::mt19937 &rng) {
 
     std::vector<int> vertices(g.V);
     for (int i = 0; i < g.V; ++i) {
-        vertices[new_s.ordering[i]] = i;
+        vertices[new_s.positions[i]] = i;
     }
 
     for (int j = 0; j < g.V - 1; ++j) {
@@ -28,8 +28,8 @@ co::State co::ls::swap_neighbors(State &s, DGraph &g, std::mt19937 &rng) {
         }
 
         if (swap) {
-            int u_pos = new_s.ordering[u];
-            int v_pos = new_s.ordering[v];
+            int u_pos = new_s.positions[u];
+            int v_pos = new_s.positions[v];
 
             new_s.remove_vertex(u, g);
             new_s.remove_vertex(v, g);
@@ -37,7 +37,7 @@ co::State co::ls::swap_neighbors(State &s, DGraph &g, std::mt19937 &rng) {
             new_s.place_vertex(u, v_pos, g);
 
             for (int i = 0; i < g.V; ++i) {
-                vertices[new_s.ordering[i]] = i;
+                vertices[new_s.positions[i]] = i;
             }
         }
     }
@@ -54,7 +54,7 @@ co::State co::ls::shift_range(State &s, DGraph &g, std::mt19937 &rng) {
 
     std::vector<int> vertices(g.V);
     for (int i = 0; i < g.V; ++i) {
-        vertices[new_s.ordering[i]] = i;
+        vertices[new_s.positions[i]] = i;
     }
 
     int start = std::uniform_int_distribution<int>(0, g.V - 3)(rng);
@@ -73,7 +73,7 @@ co::State co::ls::shift_range(State &s, DGraph &g, std::mt19937 &rng) {
         // convert vertex positions to ordering
         co::State new_s(g.V);
         for (int i = 0; i < g.V; ++i) {
-            new_s.ordering[new_vertices[i]] = i;
+            new_s.positions[new_vertices[i]] = i;
         }
         new_s.evaluate_full(g);
 

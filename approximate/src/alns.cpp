@@ -29,10 +29,10 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline) {
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::greedy),
         // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
         // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
+        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
     };
 
     this->builders = {
@@ -77,6 +77,8 @@ co::State co::ALNS::solve(co::DGraph &g) {
         best = co::ls::shift_range(best, g, this->rng);
     }
 
+    // best.check_validtity(g);
+
     co::State current = best;
     co::State s = best;
 
@@ -96,7 +98,12 @@ co::State co::ALNS::solve(co::DGraph &g) {
         // destroy current state
         co::op_change destroyed = destroy(g, s, this->rng);
         // repair the state
+        // s.check_consistency(g);
+        // co::check_duplicates(destroyed);
+
         repair(g, s, destroyed, this->rng);
+
+        // s.check_validtity(g);
 
         // todo: remove before submission
         // int val = s.cost;
@@ -112,7 +119,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
             reward = std::max(10, reward);
             best = s;
             // todo: remove before submission
-            std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
+            // std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
         } else if (s.cost < current.cost) {
             reward = std::max(5, reward);
         }

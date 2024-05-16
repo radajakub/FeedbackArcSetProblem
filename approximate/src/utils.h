@@ -2,8 +2,10 @@
 #define __UTILS_H__
 
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 #include <random>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -15,6 +17,8 @@ namespace co {
 
     int argmax(std::vector<double> &vector);
     int argmax(std::vector<int> &vector);
+
+    void check_duplicates(std::vector<int> &vector);
 };
 
 #endif

@@ -5,10 +5,10 @@ co::State co::branch_and_bound(co::DGraph &g) {
     co::IncrementalState best_state(g.V);
 
     // prepare list of all vertices
-    std::vector<std::pair<int, int>> ordering = g.in_cost_vertices();
+    std::vector<std::pair<int, int>> positions = g.in_cost_vertices();
     std::vector<int> vertices(g.V);
-    for (int i = 0; i < ordering.size(); ++i) {
-        vertices[i] = ordering[i].second;
+    for (int i = 0; i < positions.size(); ++i) {
+        vertices[i] = positions[i].second;
     }
 
     std::reverse(vertices.begin(), vertices.end());
@@ -39,7 +39,7 @@ co::State co::branch_and_bound(co::DGraph &g) {
         // try assigning all unassigned neighbors
         for (int v : vertices) {
             // skip if it was already assigned
-            if (current.ordering[v] != -1) continue;
+            if (current.positions[v] != -1) continue;
 
             co::IncrementalState next = current;
             next.place_vertex(v, g);

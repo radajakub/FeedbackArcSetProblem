@@ -3,8 +3,8 @@
 co::State co::build::random(co::DGraph &g, std::mt19937 &rng) {
     co::State s(g.V);
 
-    std::iota(s.ordering.begin(), s.ordering.end(), 0);
-    std::shuffle(s.ordering.begin(), s.ordering.end(), rng);
+    std::iota(s.positions.begin(), s.positions.end(), 0);
+    std::shuffle(s.positions.begin(), s.positions.end(), rng);
 
     return s;
 }
@@ -51,9 +51,9 @@ co::State co::build::_bidirect(co::DGraph &g, std::vector<int> &order) {
     int u = g.V - 1;
     for (int v : order) {
         if (g.in_costs[v] < g.out_costs[v]) {
-            s.ordering[v] = l++;
+            s.positions[v] = l++;
         } else {
-            s.ordering[v] = u--;
+            s.positions[v] = u--;
         }
     }
 
@@ -61,7 +61,7 @@ co::State co::build::_bidirect(co::DGraph &g, std::vector<int> &order) {
 }
 
 co::State co::build::bidirect(co::DGraph &g, std::mt19937 &rng) {
-    // ordering is 0, 1, 2, ..., V - 1
+    // positions is 0, 1, 2, ..., V - 1
     std::vector<int> order(g.V);
     std::iota(order.begin(), order.end(), 0);
 
