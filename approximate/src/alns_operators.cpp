@@ -263,26 +263,34 @@ co::op_change co::destroy::more_incoming(DGraph &g, State &s, std::mt19937 &rng)
     // compute backward cost and forward cost
     std::vector<int> income_cost(g.V, 0);
     std::vector<int> outgoing_gain(g.V, 0);
+    std::vector<int> balance(g.V, 0);
 
     for (int v = 0; v < g.V; ++v) {
         for (co::Vertex &u : g.out_edges[v]) {
             if (s.positions[v] < s.positions[u.vertex]) {
-                outgoing_gain[v] += u.cost;
+                balance[v] += u.cost;
             }
         }
         for (co::Vertex &u : g.in_edges[v]) {
             if (s.positions[v] < s.positions[u.vertex]) {
-                income_cost[v] += u.cost;
+                balance[v] -= u.cost;
             }
         }
     }
 
+    std::vector<std::pair<int, int>> indexed_balance = co::enumerate(balance);
+    std::sort(indexed_balance.begin(), indexed_balance.end(), [&](std::pair<int, int> a, std::pair<int, int> b) { return a.first < b.first; });
+
     // remove all which have higher cost backward than forward
     std::vector<int> destroyed;
     for (int i = 0; i < g.V; ++i) {
-        if (income_cost[i] > outgoing_gain[i]) {
+        int balance = indexed_balance[i].first;
+        int vertex = indexed_balance[i].second;
+        if (balance < 0) {
             s.remove_vertex(i, g);
             destroyed.push_back(i);
+        } else {
+            break;
         }
     }
     return destroyed;
@@ -300,9 +308,6 @@ void co::repair::random(DGraph &g, State &s, co::op_change destroyed, std::mt199
 }
 
 void co::repair::greedy(DGraph &g, State &s, co::op_change destroyed, std::mt19937 &rng) {
-    // shuffle the destroyed vertices to provide randomness
-    std::shuffle(destroyed.begin(), destroyed.end(), rng);
-
     // for every destroyed vertex find the best position
     for (int v : destroyed) {
         int best_pos = -1;

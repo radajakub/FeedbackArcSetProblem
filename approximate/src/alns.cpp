@@ -11,22 +11,22 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
     this->deadline = deadline;
     this->p_dist = std::uniform_real_distribution<double>(0, 1);
     this->operators = {
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::random),
         std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
-        std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
+        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
     };
 
     if (V > 5) {
@@ -55,10 +55,13 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
         co::build::bidirect_shuffle,
     };
 
-    this->ls_ops = {};
-    if (V > 4) {
-        // this->ls_ops.push_back(co::ls::shift_range);
+    this->ls_ops = {
+        co::ls::all_k_swaps,
+    };
+    if (V > 5) {
         this->ls_ops.push_back(co::ls::all_two_ops);
+        // this->ls_ops.push_back(co::ls::shift_range);
+        // this->ls_ops.push_back(co::ls::range_reversal);
     }
 
     this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);

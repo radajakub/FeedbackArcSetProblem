@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     std::string time_limit = argv[3];
 
     // start timer
-    std::chrono::milliseconds limit_ms(static_cast<int>(std::stof(time_limit) * 1000) - SAFETY_MARGIN_MS);
+    std::chrono::milliseconds limit_ms(static_cast<int>(std::floor(std::stof(time_limit)) * 1000) - SAFETY_MARGIN_MS);
     std::chrono::steady_clock::time_point deadline = std::chrono::steady_clock::now() + limit_ms;
 
     co::InputGraph input_graph(input_path);

@@ -10,8 +10,7 @@ co::State::State(int V) {
 // todo: paralellize this
 void co::State::remove_vertex(int v, DGraph &g) {
     if (this->positions[v] == -1) {
-        std::cout << "cannot remove the same vertex twice!!" << std::endl;
-        exit(1);
+        return;
     }
 
     int pos = this->positions[v];
@@ -42,8 +41,7 @@ void co::State::remove_vertex(int v, DGraph &g) {
 
 void co::State::place_vertex(int v, int pos, DGraph &g) {
     if (this->positions[v] != -1) {
-        std::cout << "cannot insert already placed vertex!!" << std::endl;
-        exit(1);
+        return;
     }
 
     pos = std::min(pos, this->max_position + 1);
@@ -104,7 +102,8 @@ void co::State::evaluate_full(co::DGraph &g) {
     for (int u = 0; u < g.V; ++u) {
         // do not allow evaluation of partial states
         if (this->positions[u] == -1) {
-            exit(1);
+            // exit(1);
+            return;
         }
 
         for (co::Vertex &v : g.out_edges[u]) {
