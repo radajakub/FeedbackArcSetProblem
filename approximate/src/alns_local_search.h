@@ -32,6 +32,8 @@ namespace co {
 
             int select();
 
+            int select_all();
+
             void update(int op, bool improvement);
             void reset();
         };

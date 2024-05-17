@@ -25,6 +25,7 @@ namespace co {
         op_change random_multiple(DGraph &g, State &s, std::mt19937 &rng);
         // remove MAX_DESTROY_RATIO of consecutive vertices
         op_change random_range(DGraph &g, State &s, std::mt19937 &rng);
+        op_change random_range_sorted(DGraph &g, State &s, std::mt19937 &rng);
         // remove a random vertex and all backward adjacent vertices
         op_change backward_adjacent(DGraph &g, State &s, std::mt19937 &rng);
         op_change adjacent(DGraph &g, State &s, std::mt19937 &rng);

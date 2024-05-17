@@ -49,6 +49,51 @@ co::op_change co::destroy::random_range(DGraph &g, State &s, std::mt19937 &rng) 
     return destroyed;
 }
 
+co::op_change co::destroy::random_range_sorted(DGraph &g, State &s, std::mt19937 &rng) {
+    int k_min = 2;
+    int k_max = std::max((int)(MAX_DESTROY_RATIO * g.V), k_min + 1);
+
+    std::uniform_int_distribution<int> k_dist(k_min, k_max);
+    int k = k_dist(rng);
+    std::uniform_int_distribution<int> start_dist(0, g.V - k - 1);
+    int start = start_dist(rng);
+
+    std::vector<int> vertices = s.to_vertices();
+
+    std::vector<int> destroyed(vertices.begin() + start, vertices.begin() + start + k);
+
+    // sort destroyed by cost
+    // (1) compute cost of destroyed vertices
+    std::vector<int> costs(destroyed.size(), 0);
+    for (int i = 0; i < destroyed.size(); ++i) {
+        int v = destroyed[i];
+        int v_pos = s.positions[v];
+        for (co::Vertex &u : g.in_edges[v]) {
+            if (v_pos > s.positions[u.vertex]) {
+                costs[i] += u.cost;
+            }
+        }
+        for (co::Vertex &u : g.in_edges[v]) {
+            if (v_pos < s.positions[u.vertex]) {
+                costs[i] += u.cost;
+            }
+        }
+    }
+
+    // (2) sort destroyed by cost
+    std::vector<std::pair<int, int>> indexed_costs = co::enumerate(costs);
+    std::sort(indexed_costs.begin(), indexed_costs.end(), [&](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+        return a.first > b.first;
+    });
+
+    for (std::pair<int, int> &i : indexed_costs) {
+        int v = destroyed[i.second];
+        s.remove_vertex(v, g);
+    }
+
+    return destroyed;
+}
+
 co::op_change co::destroy::backward_adjacent(DGraph &g, State &s, std::mt19937 &rng) {
     // sample random vertex
     std::uniform_int_distribution<int> v_dist(0, g.V - 1);
@@ -325,7 +370,6 @@ void co::repair::greedy(DGraph &g, State &s, co::op_change destroyed, std::mt199
                     cost += u.cost;
                 }
             }
-
             if (cost < best_cost) {
                 best_pos = pos;
                 best_cost = cost;

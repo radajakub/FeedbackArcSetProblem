@@ -17,6 +17,12 @@ int co::ls::LSSelector::select() {
     return *std::next(choices.begin(), dist(rng));
 }
 
+int co::ls::LSSelector::select_all() {
+    std::uniform_int_distribution<int> dist(0, this->all.size() - 1);
+    int op = dist(rng);
+    return this->all[op];
+}
+
 void co::ls::LSSelector::update(int op, bool improvement) {
     if (!improvement) {
         choices.erase(op);

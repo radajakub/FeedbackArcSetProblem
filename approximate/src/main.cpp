@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     std::vector<co::State> small_solutions(small_subgraphs.size(), co::State(0));
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
 
-#pragma omp parallel for schedule(dynamic)
+    // #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < small_solutions.size(); ++i) {
         small_solutions[i] = co::branch_and_bound(small_subgraphs[i]);
     }
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
     std::chrono::milliseconds time_per_graph = big_limit_ms / big_subgraphs_vertices;
     // if there are subgraphs that are smaller than some threshold, solve them exactly by branch and bound
     for (int i = 0; i < big_subgraphs.size(); ++i) {
-        std::cout << omp_get_thread_num() << std::endl;
         std::chrono::milliseconds graph_time = time_per_graph * big_subgraphs[i].V;
         std::chrono::steady_clock::time_point sub_deadline = std::chrono::steady_clock::now() + graph_time;
         co::ALNS alns(SEED, sub_deadline, big_subgraphs[i].V);
