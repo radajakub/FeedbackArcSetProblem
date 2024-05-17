@@ -10,7 +10,7 @@
 
 namespace co {
 
-    void save_solutions(std::vector<State> &small_solutions, std::vector<DGraph> &small_gs, std::vector<State> &big_solutions, std::vector<DGraph> &big_gs, std::string outpath);
+    void save_solutions(std::vector<State> &solutions, std::vector<DGraph> &gs, std::string outpath);
 
 };
 

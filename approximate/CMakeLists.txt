@@ -8,4 +8,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/opt/homebrew/opt/libomp/include -O2 -
 link_directories(/opt/homebrew/opt/libomp/lib)
 add_link_options(-lomp)
 
-add_executable(alns src/main.cpp src/save.cpp src/utils.cpp src/graph.cpp src/state.cpp src/exact.cpp src/alns_builders.cpp src/alns_operators.cpp src/alns_selectors.cpp src/alns_acceptors.cpp src/alns_local_search.cpp src/alns.cpp)
+add_executable(alns src/main.cpp src/save.cpp src/utils.cpp src/graph.cpp src/state.cpp src/alns_builders.cpp src/alns_operators.cpp src/alns_selectors.cpp src/alns_acceptors.cpp src/alns.cpp)

@@ -378,3 +378,40 @@ void co::repair::greedy(DGraph &g, State &s, co::op_change destroyed, std::mt199
         s.place_vertex(v, best_pos, g);
     }
 }
+
+void co::repair::greedy_one_piece(DGraph &g, State &s, co::op_change destroyed, std::mt19937 &rng) {
+    std::vector<int> vertices(g.V, -1);
+    for (int v = 0; v < g.V; ++v) {
+        int pos = s.positions[v];
+        if (pos != -1) {
+            vertices[pos] = v;
+        }
+    }
+
+    std::vector<int> vertices2;
+    for (int i = 0; i < g.V; ++i) {
+        if (vertices[i] != -1) {
+            vertices2.push_back(vertices[i]);
+        }
+    }
+
+    std::reverse(destroyed.begin(), destroyed.end());
+
+    std::vector<int> best_vertices;
+    int best_cost = std::numeric_limits<int>::max();
+    for (int i = 0; i < vertices2.size(); ++i) {
+        std::vector<int> s_vertices = vertices2;
+        s_vertices.insert(s_vertices.begin() + i, destroyed.begin(), destroyed.end());
+
+        co::State new_s(g.V);
+        new_s.from_vertices(s_vertices);
+        new_s.evaluate_full(g);
+        if (new_s.cost < best_cost) {
+            best_cost = new_s.cost;
+            best_vertices = s_vertices;
+        }
+    }
+
+    s.from_vertices(best_vertices);
+    s.evaluate_full(g);
+}

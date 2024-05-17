@@ -6,7 +6,6 @@
 #include <utility>
 #include <vector>
 
-#include "exact.h"
 #include "graph.h"
 #include "state.h"
 
@@ -40,6 +39,7 @@ namespace co {
     namespace repair {
         void random(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
         void greedy(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
+        void greedy_one_piece(DGraph &g, State &s, op_change destroyed, std::mt19937 &rng);
     };
 
 };

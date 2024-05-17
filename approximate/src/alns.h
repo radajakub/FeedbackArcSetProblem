@@ -11,7 +11,6 @@
 
 #include "alns_acceptors.h"
 #include "alns_builders.h"
-#include "alns_local_search.h"
 #include "alns_operators.h"
 #include "alns_selectors.h"
 #include "graph.h"
@@ -34,11 +33,8 @@ namespace co {
         std::vector<builder> builders;
         std::vector<builder> restart_builders;
 
-        std::vector<ls_op> ls_ops;
-
         std::unique_ptr<co::select::Selector> selector;
         std::unique_ptr<co::accept::Acceptor> acceptor;
-        std::unique_ptr<co::ls::LSSelector> ls_selector;
 
         long int iter;
         std::chrono::milliseconds prev_iter;
