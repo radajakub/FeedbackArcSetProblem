@@ -35,9 +35,9 @@ namespace co {
             void reset();
         };
 
-        std::pair<State, bool> shift_range(State &s, DGraph &g, std::mt19937 &rng);
-
         std::pair<State, bool> all_two_ops(State &s, DGraph &g, std::mt19937 &rng);
+
+        // std::pair<State, bool> all_k_swaps(State &s, DGraph &g, std::mt19937 &rng);
     };
 };
 
