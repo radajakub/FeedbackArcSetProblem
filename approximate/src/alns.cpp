@@ -55,6 +55,12 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
         co::build::bidirect_shuffle,
     };
 
+    this->ls_ops = {};
+    if (V > 4) {
+        // this->ls_ops.push_back(co::ls::shift_range);
+        this->ls_ops.push_back(co::ls::all_two_ops);
+    }
+
     this->builder_dist = std::uniform_int_distribution<int>(0, this->restart_builders.size() - 1);
 
     // intitilize bandit which will select the operation pair
@@ -67,6 +73,8 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
     // this->acceptor = std::unique_ptr<co::accept::Acceptor>(new co::accept::MovingAverage(100, 0.5));
     this->acceptor = std::unique_ptr<co::accept::Acceptor>(new co::accept::SimulatedAnnealing(10, 0.01, 0.99, this->rng));
 
+    this->ls_selector = std::unique_ptr<co::ls::LSSelector>(new co::ls::LSSelector(this->ls_ops.size(), this->rng));
+
     this->iter = 0;
     this->prev_iter = std::chrono::milliseconds(0);
 }
@@ -74,11 +82,14 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
 co::State co::ALNS::solve(co::DGraph &g) {
     co::State best = this->choose_builder()(g, this->rng);
     best.evaluate_full(g);
-    best = co::ls::swap_neighbors(best, g, this->rng);
-    if (g.V < 5) {
-        best = co::ls::swap_neighbors(best, g, this->rng);
-    } else {
-        best = co::ls::shift_range(best, g, this->rng);
+
+    int ls_op = this->ls_selector->select();
+    if (ls_op != -1) {
+        std::pair<co::State, bool> res = this->ls_ops[ls_op](best, g, this->rng);
+        this->ls_selector->update(ls_op, res.second);
+        if (res.second) {
+            best = res.first;
+        }
     }
 
     // best.check_validtity(g);
@@ -117,6 +128,18 @@ co::State co::ALNS::solve(co::DGraph &g) {
         //     exit(1);
         // }
 
+        double p = this->p_dist(this->rng);
+        if (p < 0.3) {
+            ls_op = this->ls_selector->select();
+            if (ls_op != -1) {
+                std::pair<co::State, bool> res = this->ls_ops[ls_op](best, g, this->rng);
+                this->ls_selector->update(ls_op, res.second);
+                if (res.second) {
+                    s = res.first;
+                }
+            }
+        }
+
         // check if best solution was found
         int reward = 0;
         if (s.cost < best.cost) {
@@ -141,7 +164,13 @@ co::State co::ALNS::solve(co::DGraph &g) {
                 current = this->choose_builder()(g, this->rng);
                 // current = co::build::random(g, this->rng);
                 current.evaluate_full(g);
-                current = co::ls::shift_range(current, g, this->rng);
+
+                this->ls_selector->reset();
+                ls_op = this->ls_selector->select();
+                std::pair<co::State, bool> res = this->ls_ops[ls_op](best, g, this->rng);
+                if (res.second) {
+                    s = res.first;
+                }
                 // this->acceptor->reset();
                 // this->selector->reset();
             }

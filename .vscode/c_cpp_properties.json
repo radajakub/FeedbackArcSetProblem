@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Library/gurobi1100/macos_universal2/include"
+                "/Library/gurobi1100/macos_universal2/include",
+                "/opt/homebrew/opt/libomp/include/"
             ],
             "defines": [ ],
             "macFrameworkPath": [
