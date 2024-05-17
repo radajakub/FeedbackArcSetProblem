@@ -8,8 +8,7 @@
 #include "save.h"
 #include "utils.h"
 
-const int EXACT_THRESHOLD = 6;
-const int SAFETY_MARGIN_MS = 200;
+const int SAFETY_MARGIN_MS = 100;
 const int SEED = -1;
 
 int main(int argc, char *argv[]) {

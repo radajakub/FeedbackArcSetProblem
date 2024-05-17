@@ -10,24 +10,7 @@ co::ALNS::ALNS(int seed, std::chrono::steady_clock::time_point deadline, int V) 
 
     this->deadline = deadline;
     this->p_dist = std::uniform_real_distribution<double>(0, 1);
-    this->operators = {
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::backward_adjacent, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::adjacent, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::most_costly_adjacent, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::high_degree, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::mostly_backwards, co::repair::greedy),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::random),
-        // std::make_pair<co::destroy_op, co::repair_op>(co::destroy::more_incoming, co::repair::greedy),
-    };
+    this->operators = {};
 
     if (V > 5) {
         this->operators.push_back(std::make_pair<co::destroy_op, co::repair_op>(co::destroy::random_multiple, co::repair::random));
@@ -112,7 +95,7 @@ co::State co::ALNS::solve(co::DGraph &g) {
             reward = std::max(10, reward);
             best = s;
             // todo: remove before submission
-            std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
+            // std::cout << "[" << this->iter << "] New best solution found: " << best.cost << std::endl;
         } else if (s.cost < current.cost) {
             reward = std::max(5, reward);
         }
